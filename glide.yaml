@@ -2,3 +2,5 @@ package: github.com/gauravagarwalr/Yet-Another-Expense-Splitter
 import:
 - package: github.com/gorilla/mux
   version: ^1.6.0
+- package: github.com/jinzhu/gorm
+  version: ^1.0.0
