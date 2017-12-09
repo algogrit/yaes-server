@@ -4,3 +4,6 @@ import:
   version: ^1.6.0
 - package: github.com/jinzhu/gorm
   version: ^1.0.0
+- package: golang.org/x/crypto
+  subpackages:
+  - bcrypt
