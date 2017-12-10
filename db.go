@@ -14,6 +14,7 @@ var databaseMap = map[string]string{
 
 func migration(db *gorm.DB) {
 	db.AutoMigrate(&model.User{})
+	db.AutoMigrate(&model.Expense{})
 
 	addCheckForEmptyUsername := "ALTER TABLE users ADD CONSTRAINT check_empty_username CHECK (username <> '');"
 	db.Exec(addCheckForEmptyUsername)

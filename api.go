@@ -5,9 +5,13 @@ import (
 	"log"
 	"net/http"
 
+	jwtmiddleware "github.com/auth0/go-jwt-middleware"
+	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/gauravagarwalr/Yet-Another-Expense-Splitter/src/models"
 	"github.com/gorilla/mux"
 )
+
+var jwtSigningKey = []byte("483175006c1088c849502ef22406ac4e")
 
 func createUserHandler(w http.ResponseWriter, req *http.Request) {
 	var creds = make(map[string]interface{})
@@ -38,7 +42,7 @@ func createSessionHandler(w http.ResponseWriter, req *http.Request) {
 	db.Where("username = ?", creds["username"]).First(&user)
 
 	if comparePasswords(user.HashedPassword, creds["password"]) {
-		tokenMap := model.CreateJWTToken(user)
+		tokenMap := model.CreateJWTToken(user, jwtSigningKey)
 
 		json.NewEncoder(w).Encode(tokenMap)
 	} else {
@@ -47,10 +51,37 @@ func createSessionHandler(w http.ResponseWriter, req *http.Request) {
 	}
 }
 
+func createExpenseHandler(w http.ResponseWriter, req *http.Request) {
+	jwtToken := req.Context().Value("user").(*jwt.Token)
+
+	user := model.FindUserFromToken(jwtToken, db)
+
+	var expense model.Expense
+
+	json.NewDecoder(req.Body).Decode(&expense)
+	expense.User = user
+
+	if err := db.Create(&expense).Error; err != nil {
+		http.Error(w, err.Error(), Unprocessable_Entity)
+		return
+	}
+
+	json.NewEncoder(w).Encode(expense)
+}
+
 func runServer(port string) {
 	router := mux.NewRouter()
 	router.HandleFunc("/users", createUserHandler).Methods("POST")
 	router.HandleFunc("/login", createSessionHandler).Methods("POST")
+
+	jwtMiddleware := jwtmiddleware.New(jwtmiddleware.Options{
+		ValidationKeyGetter: func(token *jwt.Token) (interface{}, error) {
+			return jwtSigningKey, nil
+		},
+		SigningMethod: jwt.SigningMethodHS256,
+	})
+
+	NegroniRoute(router, "/expenses", "POST", createExpenseHandler, jwtMiddleware.HandlerWithNext)
 
 	log.Fatal(http.ListenAndServe(":"+port, router))
 }

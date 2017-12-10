@@ -2,8 +2,11 @@ package main
 
 import (
 	"log"
+	"net/http"
 	"os"
 
+	"github.com/gorilla/mux"
+	"github.com/urfave/negroni"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -36,4 +39,22 @@ func comparePasswords(hashedPwd string, plainPwd string) bool {
 	}
 
 	return true
+}
+
+func NegroniRoute(m *mux.Router,
+	path string,
+	pathType string,
+	f func(http.ResponseWriter, *http.Request), // Your Route Handler
+	mids ...func(http.ResponseWriter, *http.Request, http.HandlerFunc), // Middlewares
+) {
+	_routes := mux.NewRouter()
+	_routes.HandleFunc(path, f).Methods(pathType)
+
+	_n := negroni.New()
+	for _, mid := range mids {
+		_n.Use(negroni.HandlerFunc(mid))
+	}
+
+	_n.UseHandler(_routes)
+	m.Handle(path, _n)
 }

@@ -5,18 +5,17 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
-var jwtSigningKey = []byte("483175006c1088c849502ef22406ac4e")
-
 type User struct {
 	gorm.Model
 	Username       string `gorm:"not null;unique"`
 	HashedPassword string `json:"-" gorm:"not null"`
 	FirstName      string
 	LastName       string
-	MobileNumber   string `gorm:"not null;unique"`
+	MobileNumber   string    `gorm:"not null;unique"`
+	Expenses       []Expense `gorm:"ForeignKey:CreatedBy"`
 }
 
-func CreateJWTToken(user User) map[string]string {
+func CreateJWTToken(user User, jwtSigningKey []byte) map[string]string {
 	token := jwt.New(jwt.SigningMethodHS256)
 
 	/* Create a map to store our claims */
@@ -24,6 +23,7 @@ func CreateJWTToken(user User) map[string]string {
 
 	/* Set token claims */
 	claims["user"] = user
+	claims["userID"] = user.ID
 
 	/* Sign the token with our secret */
 	tokenString, _ := token.SignedString(jwtSigningKey)
@@ -31,4 +31,13 @@ func CreateJWTToken(user User) map[string]string {
 	tokenMap := map[string]string{"token": tokenString}
 
 	return tokenMap
+}
+
+func FindUserFromToken(jwtToken *jwt.Token, db *gorm.DB) User {
+	userID := jwtToken.Claims.(jwt.MapClaims)["userID"]
+
+	var user User
+	db.Where("id = ?", userID).First(&user)
+
+	return user
 }
