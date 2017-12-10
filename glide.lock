@@ -1,6 +1,10 @@
-hash: 0facd9e1ac00e75d085ce169a7bc03ca5583f287b351327435ba4bc7ff4b73d1
-updated: 2017-12-03T21:48:26.318903+05:30
+hash: 7fb59710cd9141682b7e83b671855e656eff0ad0071abc342ec7d98fbbcdfa0d
+updated: 2017-12-10T15:09:30.112162+05:30
 imports:
+- name: github.com/auth0/go-jwt-middleware
+  version: 5493cabe49f7bfa6e2ec444a09d334d90cd4e2bd
+- name: github.com/dgrijalva/jwt-go
+  version: dbeaa9332f19a944acb5736b4456cfcc02140e29
 - name: github.com/gorilla/context
   version: 08b5f424b9271eedf6f9f0ce86cb9396ed337a42
 - name: github.com/gorilla/mux
@@ -16,6 +20,8 @@ imports:
   subpackages:
   - hstore
   - oid
+- name: github.com/urfave/negroni
+  version: 5dbbc83f748fc3ad38585842b0aedab546d0ea1e
 - name: golang.org/x/crypto
   version: 94eea52f7b742c7cbe0b03b22f0c4c8631ece122
   subpackages:
