@@ -51,9 +51,7 @@ func createJWTToken(user User) map[string]string {
 	/* Sign the token with our secret */
 	tokenString, _ := token.SignedString(jwtSigningKey)
 
-	tokenMap := map[string]string{
-		"token": tokenString,
-	}
+	tokenMap := map[string]string{"token": tokenString}
 
 	return tokenMap
 }
