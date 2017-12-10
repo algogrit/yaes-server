@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/gauravagarwalr/Yet-Another-Expense-Splitter/src/models"
 	"github.com/gorilla/mux"
 )
 
@@ -13,15 +14,15 @@ func createUserHandler(w http.ResponseWriter, req *http.Request) {
 
 	json.NewDecoder(req.Body).Decode(&creds)
 
-	user := User{
+	user := model.User{
 		Username:     creds["username"].(string),
 		FirstName:    creds["firstName"].(string),
 		LastName:     creds["lastName"].(string),
 		MobileNumber: creds["mobileNumber"].(string)}
 	user.HashedPassword = hashAndSalt(creds["password"].(string))
 
-	if err := Db.Create(&user).Error; err != nil {
-		http.Error(w, err.Error(), UNPROCESSABLE_ENTITY)
+	if err := db.Create(&user).Error; err != nil {
+		http.Error(w, err.Error(), Unprocessable_Entity)
 		return
 	}
 
@@ -33,25 +34,23 @@ func createSessionHandler(w http.ResponseWriter, req *http.Request) {
 
 	json.NewDecoder(req.Body).Decode(&creds)
 
-	var user User
-	Db.Where("username = ?", creds["username"]).First(&user)
+	var user model.User
+	db.Where("username = ?", creds["username"]).First(&user)
 
 	if comparePasswords(user.HashedPassword, creds["password"]) {
-		tokenMap := createJWTToken(user)
+		tokenMap := model.CreateJWTToken(user)
 
 		json.NewEncoder(w).Encode(tokenMap)
 	} else {
-		http.Error(w, "Not Authorized", UNAUTHORIZED)
+		http.Error(w, "Not Authorized", Unauthorized)
 		return
 	}
 }
 
-func runServer() {
+func runServer(port string) {
 	router := mux.NewRouter()
 	router.HandleFunc("/users", createUserHandler).Methods("POST")
 	router.HandleFunc("/login", createSessionHandler).Methods("POST")
-
-	port := getenv("PORT", "12345")
 
 	log.Fatal(http.ListenAndServe(":"+port, router))
 }

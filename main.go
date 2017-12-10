@@ -1,12 +1,15 @@
 package main
 
-var jwtSigningKey = []byte("483175006c1088c849502ef22406ac4e")
+import "github.com/jinzhu/gorm"
+
+var db *gorm.DB
 
 func main() {
 	goLangEnvironment := getenv("GO_APP_ENV", "production")
+	port := getenv("PORT", "12345")
 
-	initializeDB(goLangEnvironment)
+	db = initializeDB(goLangEnvironment)
+	defer db.Close()
 
-	defer Db.Close()
-	runServer()
+	runServer(port)
 }
