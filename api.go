@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"log"
 	"net/http"
@@ -12,6 +13,7 @@ import (
 )
 
 var jwtSigningKey = []byte("483175006c1088c849502ef22406ac4e")
+var loggedInUserKey = "LoggedInUser"
 
 func createUserHandler(w http.ResponseWriter, req *http.Request) {
 	var creds = make(map[string]interface{})
@@ -51,10 +53,17 @@ func createSessionHandler(w http.ResponseWriter, req *http.Request) {
 	}
 }
 
-func createExpenseHandler(w http.ResponseWriter, req *http.Request) {
-	jwtToken := req.Context().Value("user").(*jwt.Token)
+func getUsersHandler(w http.ResponseWriter, req *http.Request) {
+	user := req.Context().Value(loggedInUserKey).(model.User)
 
-	user := model.FindUserFromToken(jwtToken, db)
+	var users []model.User
+	db.Where("id != ?", user.ID).Find(&users)
+
+	json.NewEncoder(w).Encode(users)
+}
+
+func createExpenseHandler(w http.ResponseWriter, req *http.Request) {
+	user := req.Context().Value(loggedInUserKey).(model.User)
 
 	var expense model.Expense
 
@@ -69,10 +78,44 @@ func createExpenseHandler(w http.ResponseWriter, req *http.Request) {
 	json.NewEncoder(w).Encode(expense)
 }
 
+func getExpensesHandler(w http.ResponseWriter, req *http.Request) {
+	user := req.Context().Value(loggedInUserKey).(model.User)
+	var expenses []model.Expense
+
+	db.Preload("Payables").Model(&user).Related(&expenses, "Expenses")
+
+	json.NewEncoder(w).Encode(expenses)
+}
+
+func getPayablesHandler(w http.ResponseWriter, req *http.Request) {
+	user := req.Context().Value(loggedInUserKey).(model.User)
+	var payables []model.Payable
+
+	db.Model(&user).Related(&payables, "Payables")
+
+	json.NewEncoder(w).Encode(payables)
+}
+
+func updatePayableHandler(w http.ResponseWriter, req *http.Request) {
+	// req.Context().Value(loggedInUserKey).(model.User)
+}
+
+func userLogInHandlerWithNext(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
+	jwtToken := r.Context().Value("user").(*jwt.Token)
+	user, err := model.FindUserFromToken(jwtToken, db)
+
+	if err != nil {
+		http.Error(w, "Not Authorized", Unauthorized)
+		return
+	}
+
+	newRequest := r.WithContext(context.WithValue(r.Context(), loggedInUserKey, user))
+
+	next(w, newRequest)
+}
+
 func runServer(port string) {
 	router := mux.NewRouter()
-	router.HandleFunc("/users", createUserHandler).Methods("POST")
-	router.HandleFunc("/login", createSessionHandler).Methods("POST")
 
 	jwtMiddleware := jwtmiddleware.New(jwtmiddleware.Options{
 		ValidationKeyGetter: func(token *jwt.Token) (interface{}, error) {
@@ -81,7 +124,14 @@ func runServer(port string) {
 		SigningMethod: jwt.SigningMethodHS256,
 	})
 
-	NegroniRoute(router, "/expenses", "POST", createExpenseHandler, jwtMiddleware.HandlerWithNext)
+	NegroniRoute(router, "/users", "POST", createUserHandler)
+	NegroniRoute(router, "/login", "POST", createSessionHandler)
+
+	NegroniRoute(router, "/users", "GET", getUsersHandler, jwtMiddleware.HandlerWithNext, userLogInHandlerWithNext)
+	NegroniRoute(router, "/expenses", "POST", createExpenseHandler, jwtMiddleware.HandlerWithNext, userLogInHandlerWithNext)
+	NegroniRoute(router, "/expenses", "GET", getExpensesHandler, jwtMiddleware.HandlerWithNext, userLogInHandlerWithNext)
+	NegroniRoute(router, "/payables", "GET", getPayablesHandler, jwtMiddleware.HandlerWithNext, userLogInHandlerWithNext)
+	NegroniRoute(router, "/payables/{payableID}", "PUT", updatePayableHandler, jwtMiddleware.HandlerWithNext, userLogInHandlerWithNext)
 
 	log.Fatal(http.ListenAndServe(":"+port, router))
 }

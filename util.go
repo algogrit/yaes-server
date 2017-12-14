@@ -50,11 +50,11 @@ func NegroniRoute(m *mux.Router,
 	_routes := mux.NewRouter()
 	_routes.HandleFunc(path, f).Methods(pathType)
 
-	_n := negroni.New()
+	_n := negroni.Classic()
 	for _, mid := range mids {
 		_n.Use(negroni.HandlerFunc(mid))
 	}
 
 	_n.UseHandler(_routes)
-	m.Handle(path, _n)
+	m.Handle(path, _n).Methods(pathType)
 }

@@ -12,7 +12,8 @@ type User struct {
 	FirstName      string
 	LastName       string
 	MobileNumber   string    `gorm:"not null;unique"`
-	Expenses       []Expense `gorm:"ForeignKey:CreatedBy"`
+	Expenses       []Expense `gorm:"ForeignKey:CreatedBy" json:"-"`
+	Payables       []Payable `json:"-"`
 }
 
 func CreateJWTToken(user User, jwtSigningKey []byte) map[string]string {
@@ -33,11 +34,12 @@ func CreateJWTToken(user User, jwtSigningKey []byte) map[string]string {
 	return tokenMap
 }
 
-func FindUserFromToken(jwtToken *jwt.Token, db *gorm.DB) User {
+func FindUserFromToken(jwtToken *jwt.Token, db *gorm.DB) (User, error) {
 	userID := jwtToken.Claims.(jwt.MapClaims)["userID"]
 
 	var user User
-	db.Where("id = ?", userID).First(&user)
 
-	return user
+	err := db.Where("id = ?", userID).First(&user).Error
+
+	return user, err
 }
