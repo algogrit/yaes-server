@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"strconv"
 
 	jwtmiddleware "github.com/auth0/go-jwt-middleware"
 	jwt "github.com/dgrijalva/jwt-go"
@@ -97,7 +98,31 @@ func getPayablesHandler(w http.ResponseWriter, req *http.Request) {
 }
 
 func updatePayableHandler(w http.ResponseWriter, req *http.Request) {
-	// req.Context().Value(loggedInUserKey).(model.User)
+	user := req.Context().Value(loggedInUserKey).(model.User)
+	payableID, err := strconv.ParseUint(mux.Vars(req)["payableID"], 10, 32)
+
+	var payable model.Payable
+	dbErr := db.Preload("Expense").Where("id = ?", payableID).First(&payable).Error
+
+	if err == nil {
+		err = dbErr
+	}
+
+	if err != nil {
+		http.Error(w, err.Error(), Unprocessable_Entity)
+		return
+	}
+
+	if payable.Expense.CreatedBy != user.ID {
+		http.Error(w, "Not Authorized", Unprocessable_Entity)
+		return
+	}
+
+	json.NewDecoder(req.Body).Decode(&payable)
+	payable.ID = uint(payableID)
+	db.Save(&payable)
+
+	json.NewEncoder(w).Encode(payable)
 }
 
 func userLogInHandlerWithNext(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
