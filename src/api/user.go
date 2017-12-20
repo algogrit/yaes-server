@@ -45,7 +45,7 @@ func CreateSessionHandler(w http.ResponseWriter, req *http.Request) {
 
 		json.NewEncoder(w).Encode(tokenMap)
 	} else {
-		http.Error(w, "Not Authorized", Unauthorized)
+		http.Error(w, "Not Authorized", unauthorized)
 		return
 	}
 }

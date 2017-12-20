@@ -13,7 +13,7 @@ import (
 	"github.com/urfave/negroni"
 )
 
-const Unauthorized = 401
+const unauthorized = 401
 const unprocessableEntity = 422
 
 func userLogInHandlerWithNext(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
@@ -21,7 +21,7 @@ func userLogInHandlerWithNext(w http.ResponseWriter, r *http.Request, next http.
 	user, err := model.FindUserFromToken(jwtToken, db.Instance())
 
 	if err != nil {
-		http.Error(w, "Not Authorized", Unauthorized)
+		http.Error(w, "Not Authorized", unauthorized)
 		return
 	}
 
@@ -30,7 +30,7 @@ func userLogInHandlerWithNext(w http.ResponseWriter, r *http.Request, next http.
 	next(w, newRequest)
 }
 
-func NegroniRoute(m *mux.Router,
+func negroniRoute(m *mux.Router,
 	path string,
 	pathType string,
 	f func(http.ResponseWriter, *http.Request), // Your Route Handler
@@ -58,14 +58,14 @@ func RunServer(port string) {
 		SigningMethod: jwt.SigningMethodHS256,
 	})
 
-	NegroniRoute(router, "/users", "POST", CreateUserHandler)
-	NegroniRoute(router, "/login", "POST", CreateSessionHandler)
+	negroniRoute(router, "/users", "POST", CreateUserHandler)
+	negroniRoute(router, "/login", "POST", CreateSessionHandler)
 
-	NegroniRoute(router, "/users", "GET", GetUsersHandler, jwtMiddleware.HandlerWithNext, userLogInHandlerWithNext)
-	NegroniRoute(router, "/expenses", "POST", CreateExpenseHandler, jwtMiddleware.HandlerWithNext, userLogInHandlerWithNext)
-	NegroniRoute(router, "/expenses", "GET", GetExpensesHandler, jwtMiddleware.HandlerWithNext, userLogInHandlerWithNext)
-	NegroniRoute(router, "/payables", "GET", GetPayablesHandler, jwtMiddleware.HandlerWithNext, userLogInHandlerWithNext)
-	NegroniRoute(router, "/payables/{payableID}", "PUT", UpdatePayableHandler, jwtMiddleware.HandlerWithNext, userLogInHandlerWithNext)
+	negroniRoute(router, "/users", "GET", GetUsersHandler, jwtMiddleware.HandlerWithNext, userLogInHandlerWithNext)
+	negroniRoute(router, "/expenses", "POST", CreateExpenseHandler, jwtMiddleware.HandlerWithNext, userLogInHandlerWithNext)
+	negroniRoute(router, "/expenses", "GET", GetExpensesHandler, jwtMiddleware.HandlerWithNext, userLogInHandlerWithNext)
+	negroniRoute(router, "/payables", "GET", GetPayablesHandler, jwtMiddleware.HandlerWithNext, userLogInHandlerWithNext)
+	negroniRoute(router, "/payables/{payableID}", "PUT", UpdatePayableHandler, jwtMiddleware.HandlerWithNext, userLogInHandlerWithNext)
 
 	log.Fatal(http.ListenAndServe(":"+port, router))
 }
