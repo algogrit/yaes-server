@@ -1,4 +1,4 @@
-package main
+package db
 
 import (
 	"github.com/jinzhu/gorm"
@@ -7,40 +7,45 @@ import (
 	"github.com/gauravagarwalr/Yet-Another-Expense-Splitter/src/models"
 )
 
+var dbInstance *gorm.DB
+
 var databaseMap = map[string]string{
 	"development": "yaes-dev",
 	"testing":     "yaes-test",
 	"production":  "yaes"}
 
-func migration(db *gorm.DB) {
-	db.AutoMigrate(&model.User{})
-	db.AutoMigrate(&model.Expense{})
-	db.AutoMigrate(&model.Payable{})
+func migration() {
+	dbInstance.AutoMigrate(&model.User{})
+	dbInstance.AutoMigrate(&model.Expense{})
+	dbInstance.AutoMigrate(&model.Payable{})
 
 	addCheckForEmptyUsername := "ALTER TABLE users ADD CONSTRAINT check_empty_username CHECK (username <> '');"
-	db.Exec(addCheckForEmptyUsername)
+	dbInstance.Exec(addCheckForEmptyUsername)
 
 	addCheckForEmptyMobileNumber := "ALTER TABLE users ADD CONSTRAINT check_empty_mobile_number CHECK (mobile_number <> '');"
-	db.Exec(addCheckForEmptyMobileNumber)
+	dbInstance.Exec(addCheckForEmptyMobileNumber)
 }
 
-func initializeDB(goLangEnvironment string) *gorm.DB {
+func InitializeDB(goLangEnvironment string) {
 	dbName, ok := databaseMap[goLangEnvironment]
 
 	if !ok {
 		dbName = "yaes-dev"
 	}
 
-	db, err := gorm.Open("postgres", "dbname="+dbName+" sslmode=disable")
+	localDb, err := gorm.Open("postgres", "dbname="+dbName+" sslmode=disable")
 
 	if err != nil {
 		panic("failed to connect database")
 	}
 
-	db.LogMode(goLangEnvironment != "production")
+	localDb.LogMode(goLangEnvironment != "production")
+	dbInstance = localDb
 
 	// Migrate the schema
-	migration(db)
+	migration()
+}
 
-	return db
+func Instance() *gorm.DB {
+	return dbInstance
 }

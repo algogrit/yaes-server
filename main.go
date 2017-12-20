@@ -1,15 +1,27 @@
 package main
 
-import "github.com/jinzhu/gorm"
+import (
+	"os"
 
-var db *gorm.DB
+	api "github.com/gauravagarwalr/Yet-Another-Expense-Splitter/src/api"
+	db "github.com/gauravagarwalr/Yet-Another-Expense-Splitter/src/config/db"
+)
+
+func getenv(key, fallback string) string {
+	value := os.Getenv(key)
+	if len(value) == 0 {
+		return fallback
+	}
+	return value
+}
 
 func main() {
 	goLangEnvironment := getenv("GO_APP_ENV", "production")
 	port := getenv("PORT", "12345")
 
-	db = initializeDB(goLangEnvironment)
-	defer db.Close()
+	db.InitializeDB(goLangEnvironment)
 
-	runServer(port)
+	defer db.Instance().Close()
+
+	api.RunServer(port)
 }
