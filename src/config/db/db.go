@@ -26,8 +26,8 @@ func migration() {
 	dbInstance.Exec(addCheckForEmptyMobileNumber)
 }
 
-func InitializeDB(goLangEnvironment string) {
-	dbName, ok := databaseMap[goLangEnvironment]
+func InitializeDB(goAppEnvironment string) {
+	dbName, ok := databaseMap[goAppEnvironment]
 
 	if !ok {
 		dbName = "yaes-dev"
@@ -39,7 +39,7 @@ func InitializeDB(goLangEnvironment string) {
 		panic("failed to connect database")
 	}
 
-	localDb.LogMode(goLangEnvironment != "production")
+	localDb.LogMode(goAppEnvironment != "production")
 	dbInstance = localDb
 
 	// Migrate the schema
