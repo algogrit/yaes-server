@@ -66,6 +66,41 @@ paths:
         401:
           $ref: "#/definitions/401"
 
+  /expenses:
+    get:
+      summary: List of all expenses owed to logged in user
+      operationId: getExpenses
+      tags:
+        - expenses
+      responses:
+        200:
+          description: list expenses
+          schema:
+            $ref: "#/definitions/expenses"
+        401:
+          $ref: "#/definitions/401"
+
+    post:
+      summary: Create a new expense
+      operationId: createExpense
+      tags:
+        - expenses
+      parameters:
+        - name: expense
+          in: body
+          description: Expense fields
+          required: true
+          schema:
+            $ref: '#/definitions/newExpense'
+      responses:
+        200:
+          schema:
+            $ref: "#/definitions/expense"
+        401:
+          $ref: "#/definitions/401"
+        422:
+          $ref: "#/definitions/422"
+
   /payables:
     get:
       summary: List of all payables owed by logged in user
@@ -79,8 +114,6 @@ paths:
             $ref: "#/definitions/payables"
         401:
           $ref: "#/definitions/401"
-        422:
-          $ref: "#/definitions/422"
 
   /payables/{payableID}:
     put:
@@ -89,18 +122,18 @@ paths:
       tags:
         - payables
       parameters:
-        - name: payable
-          in: body
-          description: Payable fields to update
-          required: true
-          schema:
-            $ref: '#/definitions/newPayable'
         - name: payableID
           in: path
           description: ID of payable to update
           required: true
           type: integer
           format: uint
+        - name: payable
+          in: body
+          description: Payable fields to update
+          required: true
+          schema:
+            $ref: '#/definitions/newPayable'
       responses:
         200:
           schema:
@@ -119,21 +152,28 @@ definitions:
       Password:
         type: string
 
+  jwtToken:
+    type: object
+    properties:
+      token:
+        type: string
+        readOnly: true
+
   user:
     allOf:
       - $ref: "#/definitions/newUserWithoutPassword"
-      - required:
-        - ID
-        properties:
-          ID:
-            type: integer
-            readOnly: true
-          CreatedAt:
-            type: dateTime
-          UpdatedAt:
-            type: dateTime
-          DeletedAt:
-            type: dateTime
+    required:
+      - ID
+    properties:
+      ID:
+        type: integer
+        readOnly: true
+      CreatedAt:
+        type: dateTime
+      UpdatedAt:
+        type: dateTime
+      DeletedAt:
+        type: dateTime
 
   newUserWithoutPassword:
     type: object
@@ -155,45 +195,93 @@ definitions:
   newUser:
     allOf:
       - $ref: "#/definitions/newUserWithoutPassword"
-      - required:
-        - Password
-        properties:
-          Password:
-            type: string
+    required:
+      - Password
+    properties:
+      Password:
+        type: string
 
   users:
     type: array
     items:
       $ref: '#/definitions/user'
 
-  jwtToken:
-    type: object
-    properties:
-      token:
-        type: string
-        readOnly: true
-
-  payable:
+  expense:
     type: object
     allOf:
-      - $ref: "#/definitions/newPayable"
-      - required:
-        - Password
+      - $ref: "#/definitions/newExpenseWithoutPayables"
     required:
       - ID
     properties:
       ID:
         type: integer
         format: uint
+      CreatedBy:
+        type: integer
+        format: uint
+      CreatedAt:
+        type: dateTime
+      UpdatedAt:
+        type: dateTime
+      DeletedAt:
+        type: dateTime
+      Payables:
+        $ref: "#/definitions/payables"
+
+  newExpenseWithoutPayables:
+    type: object
+    properties:
+      Amount:
+        type: number
+        format: float64
+      Place:
+        type: string
+
+  newExpense:
+    type: object
+    allOf:
+      - $ref: "#/definitions/newExpenseWithoutPayables"
+    required:
+      - Amount
+      - Place
+    properties:
+      Payables:
+        $ref: "#/definitions/newPayables"
+
+  expenses:
+    type: array
+    items:
+      $ref: '#/definitions/expense'
+
+  payable:
+    type: object
+    allOf:
+      - $ref: "#/definitions/newPayable"
+    required:
+      - ID
+    properties:
+      ID:
+        type: integer
+        format: uint
+      CreatedAt:
+        type: dateTime
+      UpdatedAt:
+        type: dateTime
+      DeletedAt:
+        type: dateTime
+      ExpenseID:
+        type: integer
+        format: uint
 
   newPayable:
     type: object
     required:
+      - UserID
+      - Status
+      - AmountOwed
+      - RatioInPercentage
     properties:
       UserID:
-        type: integer
-        format: uint
-      ExpenseID:
         type: integer
         format: uint
       RatioInPercentage:
@@ -204,6 +292,11 @@ definitions:
         format: float64
       Status:
         type: string
+
+  newPayables:
+    type: array
+    items:
+      $ref: '#/definitions/newPayable'
 
   payables:
     type: array
