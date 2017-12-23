@@ -1,0 +1,213 @@
+consumes:
+- application/json
+info:
+  title: Yet another expense splitter
+  version: 1.0.0
+paths: {}
+produces:
+- application/json
+schemes:
+- http
+swagger: "2.0"
+
+paths:
+  /login:
+    post:
+      summary: Creates a new session - login
+      operationId: createSession
+      parameters:
+        - name: credentials
+          in: body
+          description: User credentials
+          required: true
+          schema:
+            $ref: '#/definitions/credentials'
+      responses:
+        200:
+          description: login
+          schema:
+            $ref: "#/definitions/jwtToken"
+        401:
+          $ref: "#/definitions/401"
+
+  /users:
+    post:
+      summary: Create user - signup
+      operationId: createUser
+      parameters:
+        - name: user
+          in: body
+          description: User to be created
+          required: true
+          schema:
+            $ref: '#/definitions/newUser'
+      responses:
+        200:
+          description: create user - signup
+          schema:
+            $ref: "#/definitions/user"
+        422:
+          $ref: "#/definitions/422"
+
+    get:
+      summary: List other users
+      operationId: listUsers
+      tags:
+        - users
+      responses:
+        200:
+          description: list the other users
+          schema:
+            $ref: "#/definitions/users"
+        401:
+          $ref: "#/definitions/401"
+
+  /payables:
+    get:
+      summary: List of all payables owed by logged in user
+      operationId: getPayables
+      responses:
+        200:
+          description: list payables
+          schema:
+            $ref: "#/definitions/payables"
+        401:
+          $ref: "#/definitions/401"
+        422:
+          $ref: "#/definitions/422"
+
+  /payables/{payableID}:
+    put:
+      summary: Updates the given payable
+      operationId: updatePayableById
+      parameters:
+        - name: payable
+          in: body
+          description: Payable fields to update
+          required: true
+          schema:
+            $ref: '#/definitions/newPayable'
+        - name: payableID
+          in: path
+          description: ID of payable to update
+          required: true
+          type: integer
+          format: uint
+      responses:
+        200:
+          schema:
+            $ref: "#/definitions/payable"
+        401:
+          $ref: "#/definitions/401"
+        422:
+          $ref: "#/definitions/422"
+
+definitions:
+  credentials:
+    type: object
+    properties:
+      Username:
+        type: string
+      Password:
+        type: string
+
+  user:
+    allOf:
+      - $ref: "#/definitions/newUserWithoutPassword"
+      - required:
+        - ID
+        properties:
+          ID:
+            type: integer
+            readOnly: true
+          CreatedAt:
+            type: dateTime
+          UpdatedAt:
+            type: dateTime
+          DeletedAt:
+            type: dateTime
+
+  newUserWithoutPassword:
+    type: object
+    required:
+      - Username
+      - FirstName
+      - LastName
+      - MobileNumber
+    properties:
+      Username:
+        type: string
+      FirstName:
+        type: string
+      LastName:
+        type: string
+      MobileNumber:
+        type: string
+
+  newUser:
+    allOf:
+      - $ref: "#/definitions/newUserWithoutPassword"
+      - required:
+        - Password
+        properties:
+          Password:
+            type: string
+
+  users:
+    type: array
+    items:
+      $ref: '#/definitions/user'
+
+  jwtToken:
+    type: object
+    properties:
+      token:
+        type: string
+        readOnly: true
+
+  payable:
+    type: object
+    allOf:
+      - $ref: "#/definitions/newPayable"
+      - required:
+        - Password
+    required:
+      - ID
+    properties:
+      ID:
+        type: integer
+        format: uint
+
+  newPayable:
+    type: object
+    required:
+    properties:
+      UserID:
+        type: integer
+        format: uint
+      ExpenseID:
+        type: integer
+        format: uint
+      RatioInPercentage:
+        type: number
+        format: float64
+      AmountOwed:
+        type: number
+        format: float64
+      Status:
+        type: string
+
+  payables:
+    type: array
+    items:
+      $ref: '#/definitions/payable'
+
+  401:
+    description: unauthorized
+    schema:
+      type: string
+
+  422:
+    description: Unprocessable entity
+    schema:
+      type: string

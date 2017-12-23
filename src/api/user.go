@@ -12,17 +12,24 @@ const loggedInUserKey = "LoggedInUser"
 
 var jwtSigningKey = []byte("483175006c1088c849502ef22406ac4e")
 
-func CreateUserHandler(w http.ResponseWriter, req *http.Request) {
-	var creds = make(map[string]interface{})
+type newUser struct {
+	Username     string
+	FirstName    string
+	LastName     string
+	MobileNumber string
+	Password     string
+}
 
-	json.NewDecoder(req.Body).Decode(&creds)
+func CreateUserHandler(w http.ResponseWriter, req *http.Request) {
+	var newUser newUser
+	json.NewDecoder(req.Body).Decode(&newUser)
 
 	user := model.User{
-		Username:     creds["username"].(string),
-		FirstName:    creds["firstName"].(string),
-		LastName:     creds["lastName"].(string),
-		MobileNumber: creds["mobileNumber"].(string)}
-	user.HashedPassword = model.HashAndSalt(creds["password"].(string))
+		Username:     newUser.Username,
+		FirstName:    newUser.FirstName,
+		LastName:     newUser.LastName,
+		MobileNumber: newUser.MobileNumber}
+	user.HashedPassword = model.HashAndSalt(newUser.Password)
 
 	if err := db.Instance().Create(&user).Error; err != nil {
 		http.Error(w, err.Error(), unprocessableEntity)
@@ -32,15 +39,19 @@ func CreateUserHandler(w http.ResponseWriter, req *http.Request) {
 	json.NewEncoder(w).Encode(user)
 }
 
-func CreateSessionHandler(w http.ResponseWriter, req *http.Request) {
-	var creds = make(map[string]string)
+type credentials struct {
+	Username string
+	Password string
+}
 
+func CreateSessionHandler(w http.ResponseWriter, req *http.Request) {
+	var creds credentials
 	json.NewDecoder(req.Body).Decode(&creds)
 
 	var user model.User
-	db.Instance().Where("username = ?", creds["username"]).First(&user)
+	db.Instance().Where("username = ?", creds.Username).First(&user)
 
-	if model.ComparePasswords(user.HashedPassword, creds["password"]) {
+	if model.ComparePasswords(user.HashedPassword, creds.Password) {
 		tokenMap := model.CreateJWTToken(user, jwtSigningKey)
 
 		json.NewEncoder(w).Encode(tokenMap)

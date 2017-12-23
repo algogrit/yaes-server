@@ -1,4 +1,4 @@
-YAES - Yet Another Expense Spiltter
+YAES - Yet Another Expense Splitter
 -----------------------------------
 
 Expense Splitting Web App ( similar to Splitwise):
@@ -14,3 +14,21 @@ Primary purpose of the web app is to keep track of your expenses, payables and r
     - Visibility of all the individual expenses involving you at once place.
     - Settle up with any user.
     - Delete any expense.
+
+# Dev
+
+  ## Setup
+
+    $ createdb yaes-dev
+
+    $ glide install
+
+  ## Run Server
+
+    $ ./scripts/build-and-run.sh
+
+  ## Docs
+
+    $ go get -u github.com/go-swagger/go-swagger/cmd/swagger
+
+    $ swagger serve swagger.yml
