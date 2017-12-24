@@ -58,6 +58,8 @@ paths:
       operationId: listUsers
       tags:
         - users
+      parameters:
+        - $ref: "#/definitions/authorizationHeader"
       responses:
         200:
           description: list the other users
@@ -72,6 +74,8 @@ paths:
       operationId: getExpenses
       tags:
         - expenses
+      parameters:
+        - $ref: "#/definitions/authorizationHeader"
       responses:
         200:
           description: list expenses
@@ -86,6 +90,7 @@ paths:
       tags:
         - expenses
       parameters:
+        - $ref: "#/definitions/authorizationHeader"
         - name: expense
           in: body
           description: Expense fields
@@ -107,6 +112,8 @@ paths:
       operationId: getPayables
       tags:
         - payables
+      parameters:
+        - $ref: "#/definitions/authorizationHeader"
       responses:
         200:
           description: list payables
@@ -122,6 +129,7 @@ paths:
       tags:
         - payables
       parameters:
+        - $ref: "#/definitions/authorizationHeader"
         - name: payableID
           in: path
           description: ID of payable to update
@@ -158,6 +166,14 @@ definitions:
       token:
         type: string
         readOnly: true
+
+  authorizationHeader:
+    name: Authorization
+    in: header
+    description: JWT Auth Token as - "Bearer {jwtToken}"
+    schema:
+      type: string
+      pattern: Bearer \w+.\w+.\w+
 
   user:
     allOf:
