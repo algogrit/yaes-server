@@ -10,6 +10,7 @@ import (
 	"github.com/gauravagarwalr/Yet-Another-Expense-Splitter/src/config/db"
 	model "github.com/gauravagarwalr/Yet-Another-Expense-Splitter/src/models"
 	"github.com/gorilla/mux"
+	"github.com/rs/cors"
 	"github.com/urfave/negroni"
 )
 
@@ -67,5 +68,6 @@ func RunServer(port string) {
 	negroniRoute(router, "/payables", "GET", GetPayablesHandler, jwtMiddleware.HandlerWithNext, userLogInHandlerWithNext)
 	negroniRoute(router, "/payables/{payableID}", "PUT", UpdatePayableHandler, jwtMiddleware.HandlerWithNext, userLogInHandlerWithNext)
 
-	log.Fatal(http.ListenAndServe(":"+port, router))
+	handler := cors.Default().Handler(router)
+	log.Fatal(http.ListenAndServe(":"+port, handler))
 }

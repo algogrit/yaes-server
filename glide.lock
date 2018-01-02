@@ -1,5 +1,5 @@
-hash: 7fb59710cd9141682b7e83b671855e656eff0ad0071abc342ec7d98fbbcdfa0d
-updated: 2017-12-10T15:09:30.112162+05:30
+hash: 35e88b09cadf5c66729bf10fd1dc67a777f96e7d13d209a5f8f3e69bb0bdd2c8
+updated: 2018-01-02T21:25:12.895602+05:30
 imports:
 - name: github.com/auth0/go-jwt-middleware
   version: 5493cabe49f7bfa6e2ec444a09d334d90cd4e2bd
@@ -20,6 +20,8 @@ imports:
   subpackages:
   - hstore
   - oid
+- name: github.com/rs/cors
+  version: 7af7a1e09ba336d2ea14b1ce73bf693c6837dbf6
 - name: github.com/urfave/negroni
   version: 5dbbc83f748fc3ad38585842b0aedab546d0ea1e
 - name: golang.org/x/crypto
