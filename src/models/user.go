@@ -29,8 +29,7 @@ func HashAndSalt(pwd string) string {
 }
 
 func ComparePasswords(hashedPwd string, plainPwd string) bool {
-	byteHash := []byte(hashedPwd)
-	err := bcrypt.CompareHashAndPassword(byteHash, []byte(plainPwd))
+	err := bcrypt.CompareHashAndPassword([]byte(hashedPwd), []byte(plainPwd))
 	if err != nil {
 		log.Println(err)
 		return false
