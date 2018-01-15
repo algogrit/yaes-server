@@ -19,16 +19,20 @@ Primary purpose of the web app is to keep track of your expenses, payables and r
 
   ## Setup
 
-    $ createdb yaes-dev
+    $ make setup-db
 
     $ glide install
 
   ## Run Server
 
-    $ ./scripts/build-and-run.sh
+    $ make run
+
+  ## Dev Run
+
+    $ make dev-run
 
   ## Docs
 
-    $ go get -u github.com/go-swagger/go-swagger/cmd/swagger
+    $ make setup-docs
 
-    $ swagger serve swagger.yml
+    $ make docs

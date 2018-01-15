@@ -9,11 +9,6 @@ import (
 
 var dbInstance *gorm.DB
 
-var databaseMap = map[string]string{
-	"development": "yaes-dev",
-	"testing":     "yaes-test",
-	"production":  "yaes"}
-
 func migration() {
 	dbInstance.AutoMigrate(&model.User{})
 	dbInstance.AutoMigrate(&model.Expense{})
@@ -26,13 +21,7 @@ func migration() {
 	dbInstance.Exec(addCheckForEmptyMobileNumber)
 }
 
-func InitializeDB(goAppEnvironment string) {
-	dbName, ok := databaseMap[goAppEnvironment]
-
-	if !ok {
-		dbName = "yaes-dev"
-	}
-
+func InitializeDB(dbName string, goAppEnvironment string) {
 	localDb, err := gorm.Open("postgres", "dbname="+dbName+" sslmode=disable")
 
 	if err != nil {

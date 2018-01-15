@@ -16,10 +16,11 @@ func getenv(key, fallback string) string {
 }
 
 func main() {
+	dbName := getenv("DB_NAME", "yaes")
 	goAppEnvironment := getenv("GO_APP_ENV", "production")
 	port := getenv("PORT", "12345")
 
-	db.InitializeDB(goAppEnvironment)
+	db.InitializeDB(dbName, goAppEnvironment)
 
 	defer db.Instance().Close()
 
