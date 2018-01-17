@@ -1,4 +1,4 @@
-.PHONY: setup-db build
+.PHONY: setup-db recreate-db build run
 
 create-all-db:
 	createdb yaes-dev
@@ -18,8 +18,14 @@ setup: setup-db
 build:
 	go build
 
+prod-build: GO_APP_ENV = production
+prod-build: build
+
 run: build
 	./Yet-Another-Expense-Splitter
+
+prod-run: GO_APP_ENV = production
+prod-run: run
 
 dev-run:
 	gin
@@ -29,3 +35,7 @@ setup-docs:
 
 docs:
 	swagger serve swagger.yml
+
+test: DB_NAME = "yaes-test"
+test: recreate-db
+	GO_APP_ENV="test" go test -v
