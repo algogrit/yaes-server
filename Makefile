@@ -21,8 +21,8 @@ build:
 prod-build: GO_APP_ENV = production
 prod-build: build
 
-run: build
-	./Yet-Another-Expense-Splitter
+run:
+	go run main.go
 
 prod-run: GO_APP_ENV = production
 prod-run: run

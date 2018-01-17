@@ -17,6 +17,8 @@ import (
 const unauthorized = 401
 const unprocessableEntity = 422
 
+var routerInstance *mux.Router
+
 func userLogInHandlerWithNext(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
 	jwtToken := r.Context().Value("user").(*jwt.Token)
 	user, err := model.FindUserFromToken(jwtToken, db.Instance())
@@ -49,7 +51,7 @@ func negroniRoute(m *mux.Router,
 	m.Handle(path, _n).Methods(pathType)
 }
 
-func RunServer(port string) {
+func InitializeRouter() {
 	router := mux.NewRouter()
 
 	jwtMiddleware := jwtmiddleware.New(jwtmiddleware.Options{
@@ -68,6 +70,15 @@ func RunServer(port string) {
 	negroniRoute(router, "/payables", "GET", GetPayablesHandler, jwtMiddleware.HandlerWithNext, userLogInHandlerWithNext)
 	negroniRoute(router, "/payables/{payableID}", "PUT", UpdatePayableHandler, jwtMiddleware.HandlerWithNext, userLogInHandlerWithNext)
 
-	handler := cors.Default().Handler(router)
+	routerInstance = router
+}
+
+func RunServer(port string) {
+	handler := cors.Default().Handler(routerInstance)
+
 	log.Fatal(http.ListenAndServe(":"+port, handler))
+}
+
+func Instance() *mux.Router {
+	return routerInstance
 }

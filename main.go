@@ -23,5 +23,6 @@ func main() {
 
 	defer db.Instance().Close()
 
+	api.InitializeRouter()
 	api.RunServer(port)
 }
