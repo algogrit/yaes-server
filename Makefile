@@ -21,6 +21,7 @@ build:
 prod-build: GO_APP_ENV = production
 prod-build: build
 
+run: PORT = 3000
 run:
 	go run main.go
 
@@ -38,4 +39,4 @@ docs:
 
 test: DB_NAME = "yaes-test"
 test: recreate-db
-	GO_APP_ENV="test" go test -v
+	GO_APP_ENV="test" go test -v ./...

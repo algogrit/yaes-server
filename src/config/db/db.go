@@ -40,6 +40,10 @@ func InitializeDB(goAppEnvironment string) {
 	}
 
 	localDb.LogMode(goAppEnvironment != "production")
+
+	localDb.DB().SetMaxIdleConns(4)
+	localDb.DB().SetMaxOpenConns(20)
+
 	dbInstance = localDb
 
 	// Migrate the schema
