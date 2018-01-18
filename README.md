@@ -36,3 +36,8 @@ Primary purpose of the web app is to keep track of your expenses, payables and r
     $ make setup-docs
 
     $ make docs
+
+  ## Tests
+
+    $ DB_NAME="yaes-test" make setup-db # Only first time
+    $ make test
