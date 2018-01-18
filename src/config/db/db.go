@@ -41,8 +41,10 @@ func InitializeDB(goAppEnvironment string) {
 
 	localDb.LogMode(goAppEnvironment == "development")
 
-	localDb.DB().SetMaxIdleConns(4)
-	localDb.DB().SetMaxOpenConns(20)
+	if goAppEnvironment == "production" {
+		localDb.DB().SetMaxIdleConns(4)
+		localDb.DB().SetMaxOpenConns(20)
+	}
 
 	dbInstance = localDb
 
