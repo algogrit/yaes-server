@@ -39,7 +39,7 @@ func InitializeDB(goAppEnvironment string) {
 		panic("failed to connect database")
 	}
 
-	localDb.LogMode(goAppEnvironment != "production")
+	localDb.LogMode(goAppEnvironment == "development")
 
 	localDb.DB().SetMaxIdleConns(4)
 	localDb.DB().SetMaxOpenConns(20)

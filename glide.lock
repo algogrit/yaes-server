@@ -1,5 +1,5 @@
-hash: 35e88b09cadf5c66729bf10fd1dc67a777f96e7d13d209a5f8f3e69bb0bdd2c8
-updated: 2018-01-02T21:25:12.895602+05:30
+hash: d1a8765fd6d193958e53f5b47f0e9dc3f94a7f5598e980810d4cfdd688361b1c
+updated: 2018-01-19T00:30:47.782584+05:30
 imports:
 - name: github.com/auth0/go-jwt-middleware
   version: 5493cabe49f7bfa6e2ec444a09d334d90cd4e2bd
@@ -8,7 +8,7 @@ imports:
 - name: github.com/gorilla/context
   version: 08b5f424b9271eedf6f9f0ce86cb9396ed337a42
 - name: github.com/gorilla/mux
-  version: 7f08801859139f86dfafd1c296e2cba9a80d292e
+  version: 53c1911da2b537f792e7cafcb446b05ffe33b996
 - name: github.com/jinzhu/gorm
   version: 5174cc5c242a728b435ea2be8a2f7f998e15429b
   subpackages:
@@ -20,6 +20,14 @@ imports:
   subpackages:
   - hstore
   - oid
+- name: github.com/onsi/ginkgo
+  version: 9eda700730cba42af70d53180f9dcce9266bc2bc
+  subpackages:
+  - ginkgo
+- name: github.com/onsi/gomega
+  version: 003f63b7f4cff3fc95357005358af2de0f5fe152
+  subpackages:
+  - '...'
 - name: github.com/rs/cors
   version: 7af7a1e09ba336d2ea14b1ce73bf693c6837dbf6
 - name: github.com/urfave/negroni
