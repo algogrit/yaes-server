@@ -31,12 +31,12 @@ func UpdatePayableHandler(w http.ResponseWriter, req *http.Request) {
 	}
 
 	if err != nil {
-		http.Error(w, err.Error(), unprocessableEntity)
+		http.Error(w, err.Error(), http.StatusUnprocessableEntity)
 		return
 	}
 
 	if payable.Expense.CreatedBy != user.ID {
-		http.Error(w, "Not Authorized", unprocessableEntity)
+		http.Error(w, "Not Authorized", http.StatusUnprocessableEntity)
 		return
 	}
 

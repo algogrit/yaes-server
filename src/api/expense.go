@@ -17,7 +17,7 @@ func CreateExpenseHandler(w http.ResponseWriter, req *http.Request) {
 	expense.User = user
 
 	if err := db.Instance().Create(&expense).Error; err != nil {
-		http.Error(w, err.Error(), unprocessableEntity)
+		http.Error(w, err.Error(), http.StatusUnprocessableEntity)
 		return
 	}
 

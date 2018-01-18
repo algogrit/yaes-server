@@ -32,7 +32,7 @@ func CreateUserHandler(w http.ResponseWriter, req *http.Request) {
 	user.HashedPassword = model.HashAndSalt(newUser.Password)
 
 	if err := db.Instance().Create(&user).Error; err != nil {
-		http.Error(w, err.Error(), unprocessableEntity)
+		http.Error(w, err.Error(), http.StatusUnprocessableEntity)
 		return
 	}
 
@@ -56,7 +56,7 @@ func CreateSessionHandler(w http.ResponseWriter, req *http.Request) {
 
 		json.NewEncoder(w).Encode(tokenMap)
 	} else {
-		http.Error(w, "Not Authorized", unauthorized)
+		http.Error(w, "Not Authorized", http.StatusUnauthorized)
 		return
 	}
 }

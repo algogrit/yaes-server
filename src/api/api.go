@@ -14,9 +14,6 @@ import (
 	"github.com/urfave/negroni"
 )
 
-const unauthorized = 401
-const unprocessableEntity = 422
-
 var routerInstance *mux.Router
 
 func userLogInHandlerWithNext(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
@@ -24,7 +21,7 @@ func userLogInHandlerWithNext(w http.ResponseWriter, r *http.Request, next http.
 	user, err := model.FindUserFromToken(jwtToken, db.Instance())
 
 	if err != nil {
-		http.Error(w, "Not Authorized", unauthorized)
+		http.Error(w, "Not Authorized", http.StatusUnauthorized)
 		return
 	}
 
