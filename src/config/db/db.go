@@ -1,6 +1,8 @@
 package db
 
 import (
+	"log"
+
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 
@@ -32,6 +34,8 @@ func InitializeDB(goAppEnvironment string) {
 	if !ok {
 		dbName = "yaes-dev"
 	}
+
+	log.Println("Using DB: " + dbName)
 
 	localDb, err := gorm.Open("postgres", "dbname="+dbName+" sslmode=disable")
 

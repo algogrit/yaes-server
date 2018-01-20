@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"os"
 
 	api "github.com/gauravagarwalr/Yet-Another-Expense-Splitter/src/api"
@@ -18,6 +19,8 @@ func getenv(key, fallback string) string {
 func main() {
 	goAppEnvironment := getenv("GO_APP_ENV", "production")
 	port := getenv("PORT", "12345")
+
+	log.Println("Go Environment: " + goAppEnvironment)
 
 	db.InitializeDB(goAppEnvironment)
 
