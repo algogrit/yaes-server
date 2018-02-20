@@ -1,14 +1,11 @@
 FROM golang:latest as builder
-
-MAINTAINER Gaurav Agarwal <gaurav@tarkalabs.com>
-
 RUN mkdir -p /go/src/github.com/gauravagarwalr/Yet-Another-Expense-Splitter
 ADD . /go/src/github.com/gauravagarwalr/Yet-Another-Expense-Splitter
 WORKDIR /go/src/github.com/gauravagarwalr/Yet-Another-Expense-Splitter
-RUN make build
+RUN make linux
 
 FROM alpine:latest
-COPY --from=builder /go/src/github.com/gauravagarwalr/Yet-Another-Expense-Splitter/Yet-Another-Expense-Splitter .
+WORKDIR /app
+COPY --from=builder /go/src/github.com/gauravagarwalr/Yet-Another-Expense-Splitter/Yet-Another-Expense-Splitter /app
 EXPOSE 12345
-WORKDIR /
-CMD ./Yet-Another-Expense-Splitter
+ENTRYPOINT ./Yet-Another-Expense-Splitter

@@ -18,6 +18,9 @@ setup: setup-db
 build:
 	go build
 
+linux:
+	GOOS=linux CGO_ENABLED=0 go build
+
 prod-build: GO_APP_ENV = production
 prod-build: build
 
