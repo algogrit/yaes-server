@@ -13,7 +13,7 @@ recreate-db:
 	createdb ${DB_NAME}
 
 setup: setup-db
-	glide install
+	dep ensure
 
 build:
 	go build
