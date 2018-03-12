@@ -31,6 +31,9 @@ run:
 prod-run: GO_APP_ENV = production
 prod-run: run
 
+dev-setup:
+	go get github.com/codegangsta/gin
+
 dev-run:
 	gin
 
