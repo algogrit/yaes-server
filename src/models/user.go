@@ -1,7 +1,7 @@
 package model
 
 import (
-	"log"
+	log "github.com/sirupsen/logrus"
 
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/jinzhu/gorm"
@@ -22,7 +22,7 @@ type User struct {
 func HashAndSalt(pwd string) string {
 	hash, err := bcrypt.GenerateFromPassword([]byte(pwd), bcrypt.MinCost)
 	if err != nil {
-		log.Println(err)
+		log.Error(err)
 	}
 
 	return string(hash)
@@ -31,7 +31,7 @@ func HashAndSalt(pwd string) string {
 func ComparePasswords(hashedPwd string, plainPwd string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(hashedPwd), []byte(plainPwd))
 	if err != nil {
-		log.Println(err)
+		log.Error(err)
 		return false
 	}
 

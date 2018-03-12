@@ -2,8 +2,9 @@ package api
 
 import (
 	"context"
-	"log"
 	"net/http"
+
+	log "github.com/sirupsen/logrus"
 
 	jwtmiddleware "github.com/auth0/go-jwt-middleware"
 	jwt "github.com/dgrijalva/jwt-go"

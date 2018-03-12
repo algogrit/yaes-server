@@ -60,3 +60,12 @@
 [prune]
   go-tests = true
   unused-packages = true
+
+[[constraint]]
+  name = "github.com/sirupsen/logrus"
+  version = "1.0.5"
+
+[metadata.heroku]
+  root-package = "github.com/gauravagarwalr/Yet-Another-Expense-Splitter"
+  go-version = "1.10.0"
+  install = [ "./..." ]

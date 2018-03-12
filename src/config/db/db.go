@@ -1,7 +1,7 @@
 package db
 
 import (
-	"log"
+	log "github.com/sirupsen/logrus"
 
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
@@ -28,16 +28,18 @@ func migration() {
 	dbInstance.Exec(addCheckForEmptyMobileNumber)
 }
 
-func InitializeDB(goAppEnvironment string) {
-	dbName, ok := databaseMap[goAppEnvironment]
+func InitializeDB(goAppEnvironment string, dbUrl string, dbName string) {
+	var dbConnectionString string
 
-	if !ok {
-		dbName = "yaes-dev"
+	if dbUrl != "" {
+		dbConnectionString = dbUrl + dbName
+	} else {
+		dbConnectionString = "dbname=" + dbName + " sslmode=disable"
 	}
 
-	log.Println("Using DB: " + dbName)
+	log.Info("DB connection string: " + dbConnectionString)
 
-	localDb, err := gorm.Open("postgres", "dbname="+dbName+" sslmode=disable")
+	localDb, err := gorm.Open("postgres", dbConnectionString)
 
 	if err != nil {
 		panic("failed to connect database")
