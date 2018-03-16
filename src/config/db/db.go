@@ -42,7 +42,7 @@ func InitializeDB(goAppEnvironment string, dbUrl string, dbName string) {
 	localDb, err := gorm.Open("postgres", dbConnectionString)
 
 	if err != nil {
-		panic("failed to connect database")
+		log.Fatal("Database connection error. Could not connect to database: ", dbConnectionString, ". ", err)
 	}
 
 	localDb.LogMode(goAppEnvironment == "development")
