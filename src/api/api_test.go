@@ -1,6 +1,7 @@
 package api_test
 
 import (
+	"os"
 	"testing"
 
 	api "github.com/gauravagarwalr/Yet-Another-Expense-Splitter/src/api"
@@ -15,7 +16,9 @@ func TestAPI(t *testing.T) {
 }
 
 var _ = BeforeSuite(func() {
-	db.InitializeDB("test")
+	dbName := os.Getenv("DB_NAME")
+
+	db.InitializeDB("test", "", dbName)
 	api.InitializeRouter()
 })
 

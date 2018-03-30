@@ -43,6 +43,6 @@ setup-docs:
 docs:
 	swagger serve swagger.yml
 
-test: DB_NAME = "yaes-test"
+test: DB_NAME = yaes-test
 test: recreate-db
 	GO_APP_ENV="test" go test -v ./...
