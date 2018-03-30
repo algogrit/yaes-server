@@ -20,7 +20,7 @@ var _ = BeforeSuite(func() {
 	dbName := os.Getenv("DB_NAME")
 
 	db.InitializeDB("test", dbUrl, dbName)
-	api.InitializeRouter()
+	api.InitializeRouter("test")
 })
 
 var _ = AfterSuite(func() {

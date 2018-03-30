@@ -33,7 +33,7 @@ func initDB() {
 func initServer() {
 	port := getenv("PORT", "12345")
 
-	api.InitializeRouter()
+	api.InitializeRouter(goAppEnvironment)
 	api.RunServer(port)
 }
 

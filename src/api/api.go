@@ -2,7 +2,9 @@ package api
 
 import (
 	"context"
+	"encoding/json"
 	"net/http"
+	"os"
 
 	log "github.com/sirupsen/logrus"
 
@@ -15,21 +17,8 @@ import (
 	"github.com/urfave/negroni"
 )
 
+var appEnvironment string
 var routerInstance *negroni.Negroni
-
-func userLogInHandlerWithNext(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
-	jwtToken := r.Context().Value("user").(*jwt.Token)
-	user, err := model.FindUserFromToken(jwtToken, db.Instance())
-
-	if err != nil {
-		http.Error(w, "Not Authorized", http.StatusUnauthorized)
-		return
-	}
-
-	newRequest := r.WithContext(context.WithValue(r.Context(), loggedInUserKey, user))
-
-	next(w, newRequest)
-}
 
 func wrapHandler(
 	m *mux.Router,
@@ -48,7 +37,34 @@ func wrapHandler(
 	m.Handle(path, n).Methods(pathType)
 }
 
-func InitializeRouter() {
+func userLogInHandlerWithNext(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
+	jwtToken := r.Context().Value("user").(*jwt.Token)
+	user, err := model.FindUserFromToken(jwtToken, db.Instance())
+
+	if err != nil {
+		http.Error(w, "Not Authorized", http.StatusUnauthorized)
+		return
+	}
+
+	newRequest := r.WithContext(context.WithValue(r.Context(), loggedInUserKey, user))
+
+	next(w, newRequest)
+}
+
+func HealthHandler(w http.ResponseWriter, req *http.Request) {
+	health := make(map[string]string)
+
+	health["Hostname"], _ = os.Hostname()
+	health["Description"] = "API for the yaes mobile app."
+	health["GO_APP_ENV"] = appEnvironment
+	health["Host"] = req.Host
+	health["End-Point"] = req.URL.Path
+
+	json.NewEncoder(w).Encode(health)
+}
+
+func InitializeRouter(goAppEnvironment string) {
+	appEnvironment = goAppEnvironment
 	router := mux.NewRouter()
 
 	jwtMiddleware := jwtmiddleware.New(jwtmiddleware.Options{
@@ -57,6 +73,8 @@ func InitializeRouter() {
 		},
 		SigningMethod: jwt.SigningMethodHS256,
 	})
+
+	router.HandleFunc("/", HealthHandler).Methods("GET")
 
 	wrapHandler(router, "/users", "POST", CreateUserHandler)
 
