@@ -48,5 +48,5 @@ test: recreate-db
 	GO_APP_ENV="test" go test -v ./...
 
 ci-test: DB_NAME = yaes-test sslmode=disable
-ci-test: createdb yaes-test
+ci-test:
 	GO_APP_ENV="test" go test -v ./...
