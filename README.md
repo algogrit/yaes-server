@@ -19,13 +19,13 @@ Primary purpose of the web app is to keep track of your expenses, payables and r
 
   ## Setup
 
+    $ go get -u github.com/golang/dep/cmd/dep # Install Dep
+
     $ go get -u github.com/gauravagarwalr/Yet-Another-Expense-Splitter
 
     $ cd $GOPATH/src/github.com/gauravagarwalr/Yet-Another-Expense-Splitter
 
-    $ make setup-db
-
-    $ glide install
+    $ make setup
 
   ## Run Server
 

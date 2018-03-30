@@ -12,6 +12,7 @@ jobs:
       - image: postgres:9.6
         environment:
           POSTGRES_USER=ubuntu
+          POSTGRES_PASSWORD=password
           POSTGRES_DB=yaes-test
 
     working_directory: /go/src/github.com/gauravagarwalr/Yet-Another-Expense-Splitter
@@ -24,8 +25,12 @@ jobs:
             - go-
 
       - run:
+          name: Install dep
+          command: go get -u github.com/golang/dep/cmd/dep
+
+      - run:
           name: Installing dependencies
-          command: go get -v -t -d ./...
+          command: dep ensure
 
       - save_cache:
           key: go-{{ checksum "Gopkg.lock" }}
@@ -46,4 +51,4 @@ jobs:
           name: Running Tests
           command: make ci-test
           environment:
-            DATABASE_URL: "postgres://ubuntu@localhost:5432/yaes-test?sslmode=disable"
+            DATABASE_URL: "postgres://ubuntu:password@localhost:5432/yaes-test?sslmode=disable"
