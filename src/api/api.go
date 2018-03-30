@@ -15,7 +15,7 @@ import (
 	"github.com/urfave/negroni"
 )
 
-var routerInstance *mux.Router
+var routerInstance *negroni.Negroni
 
 func userLogInHandlerWithNext(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
 	jwtToken := r.Context().Value("user").(*jwt.Token)
@@ -31,22 +31,21 @@ func userLogInHandlerWithNext(w http.ResponseWriter, r *http.Request, next http.
 	next(w, newRequest)
 }
 
-func negroniRoute(m *mux.Router,
+func wrapHandler(
+	m *mux.Router,
 	path string,
 	pathType string,
-	f func(http.ResponseWriter, *http.Request), // Your Route Handler
-	mids ...func(http.ResponseWriter, *http.Request, http.HandlerFunc), // Middlewares
+	f http.HandlerFunc,
+	mids ...func(http.ResponseWriter, *http.Request, http.HandlerFunc),
 ) {
-	_routes := mux.NewRouter()
-	_routes.HandleFunc(path, f).Methods(pathType)
-
-	_n := negroni.Classic()
+	n := negroni.New()
 	for _, mid := range mids {
-		_n.Use(negroni.HandlerFunc(mid))
+		n.Use(negroni.HandlerFunc(mid))
 	}
 
-	_n.UseHandler(_routes)
-	m.Handle(path, _n).Methods(pathType)
+	n.UseHandler(f)
+
+	m.Handle(path, n).Methods(pathType)
 }
 
 func InitializeRouter() {
@@ -59,16 +58,20 @@ func InitializeRouter() {
 		SigningMethod: jwt.SigningMethodHS256,
 	})
 
-	negroniRoute(router, "/users", "POST", CreateUserHandler)
-	negroniRoute(router, "/login", "POST", CreateSessionHandler)
+	wrapHandler(router, "/users", "POST", CreateUserHandler)
 
-	negroniRoute(router, "/users", "GET", GetUsersHandler, jwtMiddleware.HandlerWithNext, userLogInHandlerWithNext)
-	negroniRoute(router, "/expenses", "POST", CreateExpenseHandler, jwtMiddleware.HandlerWithNext, userLogInHandlerWithNext)
-	negroniRoute(router, "/expenses", "GET", GetExpensesHandler, jwtMiddleware.HandlerWithNext, userLogInHandlerWithNext)
-	negroniRoute(router, "/payables", "GET", GetPayablesHandler, jwtMiddleware.HandlerWithNext, userLogInHandlerWithNext)
-	negroniRoute(router, "/payables/{payableID}", "PUT", UpdatePayableHandler, jwtMiddleware.HandlerWithNext, userLogInHandlerWithNext)
+	wrapHandler(router, "/login", "POST", CreateSessionHandler)
 
-	routerInstance = router
+	wrapHandler(router, "/users", "GET", GetUsersHandler, jwtMiddleware.HandlerWithNext, userLogInHandlerWithNext)
+	wrapHandler(router, "/expenses", "POST", CreateExpenseHandler, jwtMiddleware.HandlerWithNext, userLogInHandlerWithNext)
+	wrapHandler(router, "/expenses", "GET", GetExpensesHandler, jwtMiddleware.HandlerWithNext, userLogInHandlerWithNext)
+	wrapHandler(router, "/payables", "GET", GetPayablesHandler, jwtMiddleware.HandlerWithNext, userLogInHandlerWithNext)
+	wrapHandler(router, "/payables/{payableID}", "PUT", UpdatePayableHandler, jwtMiddleware.HandlerWithNext, userLogInHandlerWithNext)
+
+	n := negroni.Classic()
+	n.UseHandler(router)
+
+	routerInstance = n
 }
 
 func RunServer(port string) {
@@ -77,6 +80,6 @@ func RunServer(port string) {
 	log.Fatal(http.ListenAndServe(":"+port, handler))
 }
 
-func Instance() *mux.Router {
+func Instance() *negroni.Negroni {
 	return routerInstance
 }
