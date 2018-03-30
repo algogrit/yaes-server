@@ -16,9 +16,10 @@ func TestAPI(t *testing.T) {
 }
 
 var _ = BeforeSuite(func() {
+	dbUrl := os.Getenv("DATABASE_URL")
 	dbName := os.Getenv("DB_NAME")
 
-	db.InitializeDB("test", "", dbName)
+	db.InitializeDB("test", dbUrl, dbName)
 	api.InitializeRouter()
 })
 
