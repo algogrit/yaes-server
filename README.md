@@ -1,6 +1,9 @@
 YAES - Yet Another Expense Splitter
 -----------------------------------
 
+### Master Build Status
+[![CircleCI](https://circleci.com/gh/gauravagarwalr/Yet-Another-Expense-Splitter/tree/master.svg?style=svg)](https://circleci.com/gh/gauravagarwalr/Yet-Another-Expense-Splitter/tree/master)
+
 Expense Splitting Web App ( similar to Splitwise):
 
 Primary purpose of the web app is to keep track of your expenses, payables and receivables to individuals.
