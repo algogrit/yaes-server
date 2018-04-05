@@ -4,18 +4,14 @@
 version: 2
 jobs:
   build:
+    working_directory: /go/src/github.com/gauravagarwalr/Yet-Another-Expense-Splitter
+
     docker:
       - image: circleci/golang:1.10
-        environment:
-          PG_HOST=localhost
-          PG_USER=ubuntu
       - image: postgres:9.6
         environment:
-          POSTGRES_USER=ubuntu
           POSTGRES_PASSWORD=password
-          POSTGRES_DB=yaes-test
 
-    working_directory: /go/src/github.com/gauravagarwalr/Yet-Another-Expense-Splitter
     steps:
       - checkout
 
@@ -51,4 +47,4 @@ jobs:
           name: Running Tests
           command: make ci-test
           environment:
-            DATABASE_URL: "postgres://ubuntu:password@localhost:5432/yaes-test?sslmode=disable"
+            DATABASE_URL: "postgres://postgres:password@localhost:5432/postgres?sslmode=disable"
