@@ -8,10 +8,22 @@
   revision = "5493cabe49f7bfa6e2ec444a09d334d90cd4e2bd"
 
 [[projects]]
+  name = "github.com/certifi/gocertifi"
+  packages = ["."]
+  revision = "deb3ae2ef2610fde3330947281941c562861188b"
+  version = "2018.01.18"
+
+[[projects]]
   name = "github.com/dgrijalva/jwt-go"
   packages = ["."]
   revision = "dbeaa9332f19a944acb5736b4456cfcc02140e29"
   version = "v3.1.0"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/gauravagarwalr/raven-go"
+  packages = ["."]
+  revision = "2765c657a1ab5fb308df3339dc14b9356d60791b"
 
 [[projects]]
   branch = "master"
@@ -94,6 +106,12 @@
   version = "v1.3.0"
 
 [[projects]]
+  name = "github.com/pkg/errors"
+  packages = ["."]
+  revision = "645ef00459ed84a119197bfb8d8205042c6df63d"
+  version = "v0.8.0"
+
+[[projects]]
   name = "github.com/rs/cors"
   packages = ["."]
   revision = "7af7a1e09ba336d2ea14b1ce73bf693c6837dbf6"
@@ -172,6 +190,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "43f30084fcaa2cf45ebbedb569a84b639233dcd6c66fbd7ff168028baaab119e"
+  inputs-digest = "ca65562754a5a53afef2741e0a653118b8b6d502380d9a018c3aeae93e63b43b"
   solver-name = "gps-cdcl"
   solver-version = 1

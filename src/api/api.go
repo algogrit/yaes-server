@@ -12,6 +12,7 @@ import (
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/gauravagarwalr/Yet-Another-Expense-Splitter/src/config/db"
 	model "github.com/gauravagarwalr/Yet-Another-Expense-Splitter/src/models"
+	"github.com/gauravagarwalr/raven-go"
 	"github.com/gorilla/mux"
 	"github.com/rs/cors"
 	"github.com/urfave/negroni"
@@ -32,7 +33,9 @@ func wrapHandler(
 		n.Use(negroni.HandlerFunc(mid))
 	}
 
-	n.UseHandler(f)
+	ravenHandler := raven.RecoveryHandler(f)
+
+	n.UseHandler(ravenHandler)
 
 	m.Handle(path, n).Methods(pathType)
 }
@@ -74,7 +77,7 @@ func InitializeRouter(goAppEnvironment string) {
 		SigningMethod: jwt.SigningMethodHS256,
 	})
 
-	router.HandleFunc("/", HealthHandler).Methods("GET")
+	router.HandleFunc("/", raven.RecoveryHandler(HealthHandler)).Methods("GET")
 
 	wrapHandler(router, "/users", "POST", CreateUserHandler)
 

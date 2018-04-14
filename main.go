@@ -7,6 +7,8 @@ import (
 
 	api "github.com/gauravagarwalr/Yet-Another-Expense-Splitter/src/api"
 	db "github.com/gauravagarwalr/Yet-Another-Expense-Splitter/src/config/db"
+
+	"github.com/gauravagarwalr/raven-go"
 )
 
 var goAppEnvironment string
@@ -17,6 +19,12 @@ func getenv(key, fallback string) string {
 		return fallback
 	}
 	return value
+}
+
+func init() {
+	sentryDSN := os.Getenv("YAES_SERVER_SENTRY_DSN")
+
+	raven.SetDSN(sentryDSN)
 }
 
 func initDB() {
@@ -42,8 +50,8 @@ func main() {
 
 	log.Info("Go Environment: " + goAppEnvironment)
 
-	initDB()
-	initServer()
+	raven.CapturePanic(initDB, nil)
+	raven.CapturePanic(initServer, nil)
 
 	defer db.Instance().Close()
 }
