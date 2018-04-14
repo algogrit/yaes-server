@@ -22,7 +22,7 @@ func getenv(key, fallback string) string {
 }
 
 func init() {
-	sentryDSN := os.Getenv("YAES_SERVER_SENTRY_DSN")
+	sentryDSN := os.Getenv("SENTRY_DSN")
 
 	raven.SetDSN(sentryDSN)
 }
