@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"net/http"
 
-	db "github.com/gauravagarwalr/Yet-Another-Expense-Splitter/src/config/db"
-	model "github.com/gauravagarwalr/Yet-Another-Expense-Splitter/src/models"
+	db "github.com/gauravagarwalr/yaes-server/src/config/db"
+	model "github.com/gauravagarwalr/yaes-server/src/models"
 )
 
 func CreateExpenseHandler(w http.ResponseWriter, req *http.Request) {

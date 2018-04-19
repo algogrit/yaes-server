@@ -2,7 +2,7 @@ YAES - Yet Another Expense Splitter
 -----------------------------------
 
 ### Master Build Status
-[![CircleCI](https://circleci.com/gh/gauravagarwalr/Yet-Another-Expense-Splitter/tree/master.svg?style=svg)](https://circleci.com/gh/gauravagarwalr/Yet-Another-Expense-Splitter/tree/master)
+[![CircleCI](https://circleci.com/gh/gauravagarwalr/yaes-server/tree/master.svg?style=svg)](https://circleci.com/gh/gauravagarwalr/yaes-server/tree/master)
 
 Expense Splitting Web App ( similar to Splitwise):
 
@@ -26,9 +26,9 @@ Primary purpose of the web app is to keep track of your expenses, payables and r
 
     $ go get -u github.com/golang/dep/cmd/dep # Install Dep
 
-    $ go get -u github.com/gauravagarwalr/Yet-Another-Expense-Splitter
+    $ go get -u github.com/gauravagarwalr/yaes-server
 
-    $ cd $GOPATH/src/github.com/gauravagarwalr/Yet-Another-Expense-Splitter
+    $ cd $GOPATH/src/github.com/gauravagarwalr/yaes-server
 
     $ make setup
 

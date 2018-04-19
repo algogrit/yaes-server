@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 
-	"github.com/gauravagarwalr/Yet-Another-Expense-Splitter/src/api"
+	"github.com/gauravagarwalr/yaes-server/src/api"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )

@@ -4,8 +4,8 @@ import (
 	"os"
 	"testing"
 
-	api "github.com/gauravagarwalr/Yet-Another-Expense-Splitter/src/api"
-	db "github.com/gauravagarwalr/Yet-Another-Expense-Splitter/src/config/db"
+	api "github.com/gauravagarwalr/yaes-server/src/api"
+	db "github.com/gauravagarwalr/yaes-server/src/config/db"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )

@@ -10,8 +10,8 @@ import (
 
 	jwtmiddleware "github.com/auth0/go-jwt-middleware"
 	jwt "github.com/dgrijalva/jwt-go"
-	"github.com/gauravagarwalr/Yet-Another-Expense-Splitter/src/config/db"
-	model "github.com/gauravagarwalr/Yet-Another-Expense-Splitter/src/models"
+	"github.com/gauravagarwalr/yaes-server/src/config/db"
+	model "github.com/gauravagarwalr/yaes-server/src/models"
 	"github.com/gauravagarwalr/raven-go"
 	"github.com/gorilla/mux"
 	"github.com/rs/cors"

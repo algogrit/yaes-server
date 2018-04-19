@@ -5,8 +5,8 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
-	api "github.com/gauravagarwalr/Yet-Another-Expense-Splitter/src/api"
-	db "github.com/gauravagarwalr/Yet-Another-Expense-Splitter/src/config/db"
+	api "github.com/gauravagarwalr/yaes-server/src/api"
+	db "github.com/gauravagarwalr/yaes-server/src/config/db"
 
 	"github.com/gauravagarwalr/raven-go"
 )

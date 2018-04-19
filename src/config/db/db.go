@@ -6,7 +6,7 @@ import (
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 
-	"github.com/gauravagarwalr/Yet-Another-Expense-Splitter/src/models"
+	"github.com/gauravagarwalr/yaes-server/src/models"
 )
 
 var dbInstance *gorm.DB

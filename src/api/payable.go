@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"strconv"
 
-	db "github.com/gauravagarwalr/Yet-Another-Expense-Splitter/src/config/db"
-	model "github.com/gauravagarwalr/Yet-Another-Expense-Splitter/src/models"
+	db "github.com/gauravagarwalr/yaes-server/src/config/db"
+	model "github.com/gauravagarwalr/yaes-server/src/models"
 	"github.com/gorilla/mux"
 )
 
