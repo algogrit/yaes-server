@@ -41,7 +41,7 @@ setup-docs:
 	go get -v -u github.com/go-swagger/go-swagger/cmd/swagger
 
 docs:
-	swagger serve swagger.yml
+	swagger serve api-docs/swagger.yml
 
 test: DB_NAME = yaes-test
 test: recreate-db

@@ -3,7 +3,6 @@ consumes:
 info:
   title: Yet another expense splitter
   version: 1.0.0
-paths: {}
 produces:
 - application/json
 schemes:

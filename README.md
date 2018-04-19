@@ -8,6 +8,8 @@ Expense Splitting Web App ( similar to Splitwise):
 
 Primary purpose of the web app is to keep track of your expenses, payables and receivables to individuals.
 
+**Docs available at**: https://yaes-api-docs.herokuapp.com/docs
+
 ## Planned Features
 
     - Add users to your app. You will eventually split expense with them.
