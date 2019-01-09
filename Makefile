@@ -16,7 +16,7 @@ setup: setup-db
 	dep ensure
 
 build:
-	go build
+	go build ./cmd/yaes-server
 
 linux:
 	GOOS=linux CGO_ENABLED=0 go build
@@ -26,7 +26,7 @@ prod-build: build
 
 run: PORT = 3000
 run:
-	go run main.go
+	go run ./cmd/yaes-server/main.go
 
 prod-run: GO_APP_ENV = production
 prod-run: run
@@ -35,7 +35,7 @@ dev-setup:
 	go get github.com/codegangsta/gin
 
 dev-run:
-	gin
+	gin --build ./cmd/yaes-server
 
 setup-docs:
 	go get -v -u github.com/go-swagger/go-swagger/cmd/swagger

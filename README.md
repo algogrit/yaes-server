@@ -38,6 +38,8 @@ Primary purpose of the web app is to keep track of your expenses, payables and r
 
   ## Dev Run
 
+    $ make dev-setup
+
     $ make dev-run
 
   ## Docs

@@ -1,4 +1,4 @@
 project-resources/
 vendor/
-yaes-server
 gin-bin
+/yaes-server
