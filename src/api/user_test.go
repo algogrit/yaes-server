@@ -72,6 +72,7 @@ var _ = Describe("User API", func() {
 					log.Fatal("Unable to decode users: ", err.Error())
 				}
 				Expect(users).ShouldNot(BeEmpty())
+				Expect(len(users)).To(Equal(1))
 				Expect(users[0].FirstName).To(Equal("Gaurav"))
 				Expect(users[0].HashedPassword).Should(BeEmpty())
 			})
