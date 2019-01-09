@@ -46,3 +46,5 @@ func UpdatePayableHandler(w http.ResponseWriter, req *http.Request) {
 
 	json.NewEncoder(w).Encode(payable)
 }
+
+// TODO: Add handler for POST /payables

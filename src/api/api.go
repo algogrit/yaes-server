@@ -10,9 +10,9 @@ import (
 
 	jwtmiddleware "github.com/auth0/go-jwt-middleware"
 	jwt "github.com/dgrijalva/jwt-go"
+	"github.com/gauravagarwalr/raven-go"
 	"github.com/gauravagarwalr/yaes-server/src/config/db"
 	model "github.com/gauravagarwalr/yaes-server/src/models"
-	"github.com/gauravagarwalr/raven-go"
 	"github.com/gorilla/mux"
 	"github.com/rs/cors"
 	"github.com/urfave/negroni"
@@ -87,6 +87,7 @@ func InitializeRouter(goAppEnvironment string) {
 	wrapHandler(router, "/expenses", "POST", CreateExpenseHandler, jwtMiddleware.HandlerWithNext, userLogInHandlerWithNext)
 	wrapHandler(router, "/expenses", "GET", GetExpensesHandler, jwtMiddleware.HandlerWithNext, userLogInHandlerWithNext)
 	wrapHandler(router, "/payables", "GET", GetPayablesHandler, jwtMiddleware.HandlerWithNext, userLogInHandlerWithNext)
+	// TODO: wrapHandler(router, "/expenses/{expenseID}/payables", "POST", PostPayablesHandler, jwtMiddleware.HandlerWithNext, userLogInHandlerWithNext)
 	wrapHandler(router, "/payables/{payableID}", "PUT", UpdatePayableHandler, jwtMiddleware.HandlerWithNext, userLogInHandlerWithNext)
 
 	n := negroni.Classic()

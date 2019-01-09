@@ -28,7 +28,7 @@ func migration() {
 	dbInstance.Exec(addCheckForEmptyMobileNumber)
 }
 
-func InitializeDB(goAppEnvironment string, dbUrl string, dbName string) {
+func GetConnectionString(dbUrl string, dbName string) string {
 	var dbConnectionString string
 
 	if dbUrl != "" {
@@ -38,6 +38,12 @@ func InitializeDB(goAppEnvironment string, dbUrl string, dbName string) {
 	}
 
 	log.Info("DB connection string: " + dbConnectionString)
+
+	return dbConnectionString
+}
+
+func InitializeDB(goAppEnvironment string, dbUrl string, dbName string) {
+	dbConnectionString := GetConnectionString(dbUrl, dbName)
 
 	localDb, err := gorm.Open("postgres", dbConnectionString)
 

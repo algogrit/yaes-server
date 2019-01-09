@@ -3,11 +3,27 @@
 
 [[projects]]
   branch = "master"
+  digest = "1:665d2b11d5b351912ef95226b68b74195521fdeed447f4b20370b998a01041eb"
+  name = "github.com/alexflint/go-filemutex"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "d358565f3c3f5334209f1e80693e4f621650c489"
+
+[[projects]]
+  branch = "master"
   digest = "1:e4fd8a4041e47ec6cb6c38ad4baf4f1f37278c7ba23625905147a5823885787a"
   name = "github.com/auth0/go-jwt-middleware"
   packages = ["."]
   pruneopts = "UT"
   revision = "5493cabe49f7bfa6e2ec444a09d334d90cd4e2bd"
+
+[[projects]]
+  digest = "1:a571648c5f1a3f20fa405d1cf924b941c5bb236ea6d0565a63c0994e38dd8f82"
+  name = "github.com/caarlos0/env"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "518fcfb943252f77846f92ce5794086d9cb4a1b5"
+  version = "v3.5.0"
 
 [[projects]]
   digest = "1:fed1f537c2f1269fe475a8556c393fe466641682d73ef8fd0491cd3aa1e47bad"
@@ -16,6 +32,14 @@
   pruneopts = "UT"
   revision = "deb3ae2ef2610fde3330947281941c562861188b"
   version = "2018.01.18"
+
+[[projects]]
+  digest = "1:ffe9824d294da03b391f44e1ae8281281b4afc1bdaa9588c9097785e3af10cec"
+  name = "github.com/davecgh/go-spew"
+  packages = ["spew"]
+  pruneopts = "UT"
+  revision = "8991bc29aa16c548c550c7ff78260e27b9ab7c73"
+  version = "v1.1.1"
 
 [[projects]]
   digest = "1:217f778e19b8d206112c21d21a7cc72ca3cb493b67631680a2324bc50335d432"
@@ -67,6 +91,17 @@
   packages = ["."]
   pruneopts = "UT"
   revision = "1c35d901db3da928c72a72d8458480cc9ade058f"
+
+[[projects]]
+  digest = "1:dcfa589d67e2091e85fe5e7cb4e0253ab4563a08dc413e9e14018f8e57ad6d8f"
+  name = "github.com/khaiql/dbcleaner"
+  packages = [
+    "engine",
+    "logging",
+  ]
+  pruneopts = "UT"
+  revision = "3485a1ee4b01c233d640dc163757f60a77df9bf8"
+  version = "v2.2.1"
 
 [[projects]]
   digest = "1:10202160b28e26d602374aec6ddaee8cef7fb4d84529ba10b2e8e50afb25e13f"
@@ -136,6 +171,14 @@
   version = "v0.8.0"
 
 [[projects]]
+  digest = "1:0028cb19b2e4c3112225cd871870f2d9cf49b9b4276531f03438a88e94be86fe"
+  name = "github.com/pmezard/go-difflib"
+  packages = ["difflib"]
+  pruneopts = "UT"
+  revision = "792786c7400a136282c1664665ae0a8db921c6c2"
+  version = "v1.0.0"
+
+[[projects]]
   digest = "1:a74ef97fdbc3734f005ffce612a830ec2ad384042ab90806edb91b0312e5f745"
   name = "github.com/rs/cors"
   packages = ["."]
@@ -150,6 +193,25 @@
   pruneopts = "UT"
   revision = "c155da19408a8799da419ed3eeb0cb5db0ad5dbc"
   version = "v1.0.5"
+
+[[projects]]
+  digest = "1:ac83cf90d08b63ad5f7e020ef480d319ae890c208f8524622a2f3136e2686b02"
+  name = "github.com/stretchr/objx"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "477a77ecc69700c7cdeb1fa9e129548e1c1c393c"
+  version = "v0.1.1"
+
+[[projects]]
+  digest = "1:33ec13a6bee20ece7ba0dd327257fa3e97acc39cde9e135f060cdd3cc5950100"
+  name = "github.com/stretchr/testify"
+  packages = [
+    "assert",
+    "mock",
+  ]
+  pruneopts = "UT"
+  revision = "ffdc059bfe9ce6a4e144ba849dbedead332c6053"
+  version = "v1.3.0"
 
 [[projects]]
   digest = "1:606d068450c82b9ddaa21de992f73563754077f0f411235cdfe71d0903a268c3"
@@ -220,6 +282,17 @@
   revision = "4e4a3210bb54bb31f6ab2cdca2edcc0b50c420c1"
 
 [[projects]]
+  digest = "1:ece3e7d3eb951867006707dec906f7e3f52351f27465507dd3a9ef4b8fdf7e9b"
+  name = "gopkg.in/khaiql/dbcleaner.v2"
+  packages = [
+    ".",
+    "engine",
+  ]
+  pruneopts = "UT"
+  revision = "3485a1ee4b01c233d640dc163757f60a77df9bf8"
+  version = "v2.2.1"
+
+[[projects]]
   branch = "v2"
   digest = "1:73e6fda93622790d2371344759df06ff5ff2fac64a6b6e8832b792e7402956e7"
   name = "gopkg.in/yaml.v2"
@@ -227,11 +300,23 @@
   pruneopts = "UT"
   revision = "d670f9405373e636a5a2765eea47fac0c9bc91a4"
 
+[[projects]]
+  digest = "1:088137704bdac82fa4cfb9e5495ce2f868f78c07d2a7a596b4d77b1ed4a67c8a"
+  name = "syreclabs.com/go/faker"
+  packages = [
+    ".",
+    "locales",
+  ]
+  pruneopts = "UT"
+  revision = "552a925f6f001bbe99d56724e8dd53d74aa58686"
+  version = "v1.0.1"
+
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
   input-imports = [
     "github.com/auth0/go-jwt-middleware",
+    "github.com/caarlos0/env",
     "github.com/dgrijalva/jwt-go",
     "github.com/gauravagarwalr/raven-go",
     "github.com/gorilla/mux",
@@ -243,6 +328,9 @@
     "github.com/sirupsen/logrus",
     "github.com/urfave/negroni",
     "golang.org/x/crypto/bcrypt",
+    "gopkg.in/khaiql/dbcleaner.v2",
+    "gopkg.in/khaiql/dbcleaner.v2/engine",
+    "syreclabs.com/go/faker",
   ]
   solver-name = "gps-cdcl"
   solver-version = 1
