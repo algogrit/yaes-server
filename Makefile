@@ -47,5 +47,9 @@ test: DB_NAME = yaes-test
 test: recreate-db
 	GO_APP_ENV="test" go test -v ./...
 
+bench: DB_NAME = yaes-test
+bench: recreate-db
+	GO_APP_ENV="test" go test -bench=. -v ./...
+
 ci-test:
 	GO_APP_ENV="test" go test -v ./...

@@ -20,6 +20,11 @@ func TestAPI(t *testing.T) {
 	RunSpecs(t, "API Suite")
 }
 
+func BenchmarkAPI(b *testing.B) {
+	RegisterFailHandler(Fail)
+	RunSpecs(b, "API Suite")
+}
+
 type Config struct {
 	DBName string `env:"DB_NAME" envDefault:"yaes-test"`
 	DBUrl  string `env:"DATABASE_URL"`
