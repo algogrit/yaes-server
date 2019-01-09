@@ -32,7 +32,7 @@ func GetConnectionString(dbUrl string, dbName string) string {
 	var dbConnectionString string
 
 	if dbUrl != "" {
-		dbConnectionString = dbUrl + dbName
+		dbConnectionString = dbUrl
 	} else {
 		dbConnectionString = "dbname=" + dbName + " sslmode=disable"
 	}
