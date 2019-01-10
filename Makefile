@@ -19,7 +19,7 @@ build:
 	go build ./cmd/yaes-server
 
 linux:
-	GOOS=linux CGO_ENABLED=0 go build
+	GOOS=linux CGO_ENABLED=0 go build ./cmd/yaes-server
 
 prod-build: GO_APP_ENV = production
 prod-build: build
