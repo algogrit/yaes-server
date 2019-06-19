@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"net/http"
 
-	db "github.com/gauravagarwalr/yaes-server/src/config/db"
-	model "github.com/gauravagarwalr/yaes-server/src/models"
+	db "github.com/algogrit/yaes-server/src/config/db"
+	model "github.com/algogrit/yaes-server/src/models"
 )
 
 const loggedInUserKey = "LoggedInUser"

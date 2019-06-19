@@ -4,8 +4,8 @@ import (
 	"testing"
 
 	"github.com/caarlos0/env"
-	api "github.com/gauravagarwalr/yaes-server/src/api"
-	db "github.com/gauravagarwalr/yaes-server/src/config/db"
+	api "github.com/algogrit/yaes-server/src/api"
+	db "github.com/algogrit/yaes-server/src/config/db"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	log "github.com/sirupsen/logrus"

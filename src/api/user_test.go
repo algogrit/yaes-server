@@ -6,12 +6,12 @@ import (
 	"net/http/httptest"
 	"strings"
 
-	"github.com/gauravagarwalr/yaes-server/src/config/db"
+	"github.com/algogrit/yaes-server/src/config/db"
 	log "github.com/sirupsen/logrus"
 	"syreclabs.com/go/faker"
 
-	"github.com/gauravagarwalr/yaes-server/src/api"
-	"github.com/gauravagarwalr/yaes-server/src/models"
+	"github.com/algogrit/yaes-server/src/api"
+	"github.com/algogrit/yaes-server/src/models"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )

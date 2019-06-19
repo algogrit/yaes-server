@@ -4,10 +4,10 @@ import (
 	"github.com/caarlos0/env"
 	log "github.com/sirupsen/logrus"
 
-	api "github.com/gauravagarwalr/yaes-server/src/api"
-	db "github.com/gauravagarwalr/yaes-server/src/config/db"
+	api "github.com/algogrit/yaes-server/src/api"
+	db "github.com/algogrit/yaes-server/src/config/db"
 
-	"github.com/gauravagarwalr/raven-go"
+	"github.com/algogrit/raven-go"
 )
 
 // Config slurps the environment variables

@@ -8,11 +8,11 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
+	"github.com/algogrit/raven-go"
+	"github.com/algogrit/yaes-server/src/config/db"
+	model "github.com/algogrit/yaes-server/src/models"
 	jwtmiddleware "github.com/auth0/go-jwt-middleware"
 	jwt "github.com/dgrijalva/jwt-go"
-	"github.com/gauravagarwalr/raven-go"
-	"github.com/gauravagarwalr/yaes-server/src/config/db"
-	model "github.com/gauravagarwalr/yaes-server/src/models"
 	"github.com/gorilla/mux"
 	"github.com/rs/cors"
 	"github.com/urfave/negroni"

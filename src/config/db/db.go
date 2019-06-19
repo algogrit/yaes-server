@@ -6,7 +6,7 @@ import (
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 
-	"github.com/gauravagarwalr/yaes-server/src/models"
+	"github.com/algogrit/yaes-server/src/models"
 )
 
 var dbInstance *gorm.DB
