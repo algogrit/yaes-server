@@ -7,7 +7,7 @@ jobs:
     working_directory: /go/src/github.com/gauravagarwalr/yaes-server
 
     docker:
-      - image: circleci/golang:1.10
+      - image: circleci/golang:1.14.2
       - image: postgres:9.6
         environment:
           POSTGRES_PASSWORD=password
@@ -17,21 +17,17 @@ jobs:
 
       - restore_cache:
           keys:
-            - go-{{ checksum "Gopkg.lock" }}
-            - go-
-
-      - run:
-          name: Install dep
-          command: go get -u github.com/golang/dep/cmd/dep
+            - go-mod-{{ checksum "go.sum" }}
+            - go-mod-
 
       - run:
           name: Installing dependencies
-          command: dep ensure
+          command: go mod download
 
       - save_cache:
-          key: go-{{ checksum "Gopkg.lock" }}
+          key: go-mod-{{ checksum "go.sum" }}
           paths:
-            - vendor
+            - $GOPATH/pkg/mod
 
       - run:
           name: Running Tests
