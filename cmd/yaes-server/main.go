@@ -4,8 +4,8 @@ import (
 	"github.com/caarlos0/env"
 	log "github.com/sirupsen/logrus"
 
-	api "github.com/algogrit/yaes-server/src/api"
-	db "github.com/algogrit/yaes-server/src/config/db"
+	api "algogrit.com/yaes-server/src/api"
+	db "algogrit.com/yaes-server/src/config/db"
 
 	"github.com/algogrit/raven-go"
 )

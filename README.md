@@ -26,9 +26,9 @@ Primary purpose of the web app is to keep track of your expenses, payables and r
 
     $ go get -u github.com/golang/dep/cmd/dep # Install Dep
 
-    $ go get -u github.com/algogrit/yaes-server/cmd/yaes-server
+    $ go get -u algogrit.com/yaes-server/cmd/yaes-server
 
-    $ cd $GOPATH/src/github.com/algogrit/yaes-server
+    $ cd $GOPATH/src/algogrit.com/yaes-server
 
     $ make setup
 

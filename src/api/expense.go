@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"net/http"
 
-	db "github.com/algogrit/yaes-server/src/config/db"
-	model "github.com/algogrit/yaes-server/src/models"
+	db "algogrit.com/yaes-server/src/config/db"
+	model "algogrit.com/yaes-server/src/models"
 )
 
 func CreateExpenseHandler(w http.ResponseWriter, req *http.Request) {
