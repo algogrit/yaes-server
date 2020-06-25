@@ -78,6 +78,7 @@ func InitializeRouter(goAppEnvironment string) {
 	})
 
 	router.HandleFunc("/", raven.RecoveryHandler(HealthHandler)).Methods("GET")
+	router.HandleFunc("/healthz", raven.RecoveryHandler(HealthHandler)).Methods("GET")
 
 	wrapHandler(router, "/users", "POST", CreateUserHandler)
 
