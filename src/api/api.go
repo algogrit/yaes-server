@@ -8,9 +8,9 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
-	"github.com/algogrit/raven-go"
 	"algogrit.com/yaes-server/src/config/db"
 	model "algogrit.com/yaes-server/src/models"
+	"github.com/algogrit/raven-go"
 	jwtmiddleware "github.com/auth0/go-jwt-middleware"
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/gorilla/mux"
