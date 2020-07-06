@@ -1,15 +1,18 @@
 package service
 
 import (
+	"context"
 	"encoding/json"
 	"net/http"
 
 	"algogrit.com/yaes-server/entities"
 	"algogrit.com/yaes-server/users/repository"
+	jwt "github.com/dgrijalva/jwt-go"
 )
 
 // TODO: Pick this from config
 const loggedInUserKey = "LoggedInUser"
+
 var jwtSigningKey = "483175006c1088c849502ef22406ac4e"
 
 type userService struct {
@@ -72,6 +75,22 @@ func (us *userService) Login(w http.ResponseWriter, req *http.Request) {
 	tokenMap := map[string]string{"token": token}
 
 	json.NewEncoder(w).Encode(tokenMap)
+}
+
+func (us *userService) Middleware(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
+	jwtToken := r.Context().Value("user").(*jwt.Token)
+	userID := jwtToken.Claims.(jwt.MapClaims)["userID"]
+
+	user, err := us.UserRepository.FindByID(userID)
+
+	if err != nil {
+		http.Error(w, "Not Authorized", http.StatusUnauthorized)
+		return
+	}
+
+	newRequest := r.WithContext(context.WithValue(r.Context(), loggedInUserKey, user))
+
+	next(w, newRequest)
 }
 
 // New creates a new instance of UserService

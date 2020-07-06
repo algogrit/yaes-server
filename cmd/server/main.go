@@ -6,7 +6,10 @@ import (
 	"algogrit.com/yaes-server/internal/config"
 	"algogrit.com/yaes-server/internal/db"
 	"algogrit.com/yaes-server/pkg/routes"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	log "github.com/sirupsen/logrus"
+
+	healthService "algogrit.com/yaes-server/health/service"
 
 	userRepo "algogrit.com/yaes-server/users/repository"
 	userService "algogrit.com/yaes-server/users/service"
@@ -29,22 +32,23 @@ func main() {
 
 	dbInstance := db.New(cfg.AppEnv, cfg.DBUrl, cfg.DBName)
 
-	r := routes.New()
-
 	ur := userRepo.New(dbInstance)
 	us := userService.New(ur)
-
-	r.SetUserRoutes(us)
 
 	er := expenseRepo.New(dbInstance)
 	es := expenseService.New(er)
 
-	r.SetExpenseRoutes(es)
-
 	pr := payableRepo.New(dbInstance)
 	ps := payableService.New(pr)
 
-	r.SetPayableRoutes(ps)
+	r := routes.New(us, es, ps)
+
+	hs := healthService.New(cfg.AppEnv)
+
+	r.HandleFunc("/", hs.Healthz).Methods("GET")
+	r.HandleFunc("/healthz", hs.Healthz).Methods("GET")
+
+	r.Handle("/metrics", promhttp.Handler())
 
 	http.ListenAndServe(":"+cfg.Port, r)
 }

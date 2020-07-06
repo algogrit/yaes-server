@@ -10,26 +10,33 @@ import (
 
 type Router struct {
 	*mux.Router
+
+	us userService.UserService
+	es expenseService.ExpenseService
+	ps payableService.PayableService
 }
 
-func New() Router {
+func New(us userService.UserService,
+	es expenseService.ExpenseService,
+	ps payableService.PayableService) Router {
+
 	r := mux.NewRouter()
-	return Router{r}
+	routes := Router{r, us, es, ps}
+
+	routes.initRoutes()
+
+	return routes
 }
 
-func (r *Router) SetUserRoutes(us userService.UserService) {
-	r.HandleFunc("/users", us.Create).Methods("POST")
-	r.HandleFunc("/login", us.Login).Methods("POST")
+func (r *Router) initRoutes() {
+	r.HandleFunc("/users", r.us.Create).Methods("POST")
+	r.HandleFunc("/login", r.us.Login).Methods("POST")
 
-	r.HandleFunc("/users", us.Index).Methods("GET")
-}
+	r.HandleFunc("/users", r.us.Index).Methods("GET")
 
-func (r *Router) SetExpenseRoutes(es expenseService.ExpenseService) {
-	r.HandleFunc("/expenses", es.Create).Methods("POST")
-	r.HandleFunc("/expenses", es.Index).Methods("GET")
-}
+	r.HandleFunc("/expenses", r.es.Create).Methods("POST")
+	r.HandleFunc("/expenses", r.es.Index).Methods("GET")
 
-func (r *Router) SetPayableRoutes(ps payableService.PayableService) {
-	r.HandleFunc("/payables", ps.Index).Methods("GET")
-	r.HandleFunc("/payables/{payableID}", ps.Update).Methods("PUT")
+	r.HandleFunc("/payables", r.ps.Index).Methods("GET")
+	r.HandleFunc("/payables/{payableID}", r.ps.Update).Methods("PUT")
 }

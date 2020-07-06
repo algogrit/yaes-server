@@ -24,7 +24,7 @@ func (ur *userRepository) FindBy(username string) (*entities.User, error) {
 	return user, err
 }
 
-func (ur *userRepository) FindByID(id string) (*entities.User, error) {
+func (ur *userRepository) FindByID(id interface{}) (*entities.User, error) {
 	user := new(entities.User)
 	err := ur.Where("id = ?", id).First(user).Error
 
