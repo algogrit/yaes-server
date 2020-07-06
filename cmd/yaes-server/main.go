@@ -6,25 +6,17 @@ import (
 
 	api "algogrit.com/yaes-server/src/api"
 	db "algogrit.com/yaes-server/src/config/db"
-
-	"github.com/algogrit/raven-go"
 )
 
 // Config slurps the environment variables
 type Config struct {
-	DBName        string `env:"DB_NAME"`
-	DBUrl         string `env:"DATABASE_URL"`
-	AppEnv        string `env:"GO_APP_ENV" envDefault:"production"`
-	Port          string `env:"PORT" envDefault:"12345"`
-	SentryDsn     string `env:SENTRY_DSN`
-	SentryRelease string `env:SENTRY_RELEASE envDefault:"production"`
+	DBName string `env:"DB_NAME"`
+	DBUrl  string `env:"DATABASE_URL"`
+	AppEnv string `env:"GO_APP_ENV" envDefault:"production"`
+	Port   string `env:"PORT" envDefault:"12345"`
 }
 
 var cfg Config
-
-func init() {
-	raven.SetDSN(cfg.SentryDsn)
-}
 
 func initDB() {
 	dbURL := cfg.DBUrl
@@ -47,8 +39,8 @@ func main() {
 
 	log.Info("Go Environment: " + cfg.AppEnv)
 
-	raven.CapturePanic(initDB, nil)
-	raven.CapturePanic(initServer, nil)
+	initDB()
+	initServer()
 
 	defer db.Instance().Close()
 }

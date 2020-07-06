@@ -6,11 +6,11 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	log "github.com/sirupsen/logrus"
 
 	"algogrit.com/yaes-server/src/config/db"
 	model "algogrit.com/yaes-server/src/models"
-	"github.com/algogrit/raven-go"
 	jwtmiddleware "github.com/auth0/go-jwt-middleware"
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/gorilla/mux"
@@ -32,10 +32,6 @@ func wrapHandler(
 	for _, mid := range mids {
 		n.Use(negroni.HandlerFunc(mid))
 	}
-
-	ravenHandler := raven.RecoveryHandler(f)
-
-	n.UseHandler(ravenHandler)
 
 	m.Handle(path, n).Methods(pathType)
 }
@@ -77,8 +73,10 @@ func InitializeRouter(goAppEnvironment string) {
 		SigningMethod: jwt.SigningMethodHS256,
 	})
 
-	router.HandleFunc("/", raven.RecoveryHandler(HealthHandler)).Methods("GET")
-	router.HandleFunc("/healthz", raven.RecoveryHandler(HealthHandler)).Methods("GET")
+	router.HandleFunc("/", HealthHandler).Methods("GET")
+	router.HandleFunc("/healthz", HealthHandler).Methods("GET")
+
+	router.Handle("/metrics", promhttp.Handler())
 
 	wrapHandler(router, "/users", "POST", CreateUserHandler)
 
