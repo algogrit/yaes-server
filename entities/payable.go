@@ -1,7 +1,8 @@
-package model
+package entities
 
 import "github.com/jinzhu/gorm"
 
+// Payable represents the amount owed by a User to a UserID for an ExpenseID
 type Payable struct {
 	gorm.Model
 	User    User    `json:"-"`

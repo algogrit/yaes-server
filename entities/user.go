@@ -1,13 +1,13 @@
-package model
+package entities
 
 import (
-	log "github.com/sirupsen/logrus"
-
-	jwt "github.com/dgrijalva/jwt-go"
+	"github.com/dgrijalva/jwt-go"
 	"github.com/jinzhu/gorm"
 	"golang.org/x/crypto/bcrypt"
+	log "github.com/sirupsen/logrus"
 )
 
+// User represents a single user in the system
 type User struct {
 	gorm.Model
 	Username       string `gorm:"not null;unique"`
@@ -19,17 +19,20 @@ type User struct {
 	Payables       []Payable `json:"-"`
 }
 
-func HashAndSalt(pwd string) string {
+// SetPassword sets the hashed password
+func (u *User) SetPassword(pwd string) {
 	hash, err := bcrypt.GenerateFromPassword([]byte(pwd), bcrypt.MinCost)
 	if err != nil {
 		log.Error(err)
 	}
 
-	return string(hash)
+	u.HashedPassword = string(hash)
 }
 
-func ComparePasswords(hashedPwd string, plainPwd string) bool {
-	err := bcrypt.CompareHashAndPassword([]byte(hashedPwd), []byte(plainPwd))
+// MatchPassword compares plain text password with the saved hashed password
+func (u *User) MatchPassword(pwd string) bool {
+	err := bcrypt.CompareHashAndPassword([]byte(u.HashedPassword), []byte(pwd))
+
 	if err != nil {
 		log.Error(err)
 		return false
@@ -38,30 +41,17 @@ func ComparePasswords(hashedPwd string, plainPwd string) bool {
 	return true
 }
 
-func CreateJWTToken(user User, jwtSigningKey []byte) map[string]string {
+// NewJWT creates a jwt token with claims for a given user
+func (u *User) NewJWT(jwtSigningKey string) (string, error) {
 	token := jwt.New(jwt.SigningMethodHS256)
 
 	/* Create a map to store our claims */
 	claims := token.Claims.(jwt.MapClaims)
 
 	/* Set token claims */
-	claims["user"] = user
-	claims["userID"] = user.ID
+	claims["user"] = u
+	claims["userID"] = u.ID
 
 	/* Sign the token with our secret */
-	tokenString, _ := token.SignedString(jwtSigningKey)
-
-	tokenMap := map[string]string{"token": tokenString}
-
-	return tokenMap
-}
-
-func FindUserFromToken(jwtToken *jwt.Token, db *gorm.DB) (User, error) {
-	userID := jwtToken.Claims.(jwt.MapClaims)["userID"]
-
-	var user User
-
-	err := db.Where("id = ?", userID).First(&user).Error
-
-	return user, err
+	return token.SignedString([]byte(jwtSigningKey))
 }

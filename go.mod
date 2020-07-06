@@ -11,6 +11,7 @@ require (
 	github.com/dgrijalva/jwt-go v3.1.0+incompatible
 	github.com/erikstmartin/go-testdb v0.0.0-20160219214506-8d10e4a1bae5 // indirect
 	github.com/go-sql-driver/mysql v1.5.0 // indirect
+	github.com/golang/gddo v0.0.0-20200611223618-a4829ef13274
 	github.com/gorilla/context v1.1.1 // indirect
 	github.com/gorilla/mux v1.6.1
 	github.com/jinzhu/gorm v0.0.0-20160404144928-5174cc5c242a
@@ -27,7 +28,6 @@ require (
 	github.com/smartystreets/goconvey v1.6.4 // indirect
 	github.com/urfave/negroni v0.3.0
 	golang.org/x/crypto v0.0.0-20190325154230-a5d413f7728c
-	golang.org/x/text v0.3.1-0.20180208041248-4e4a3210bb54 // indirect
 	gopkg.in/khaiql/dbcleaner.v2 v2.2.1
 	syreclabs.com/go/faker v1.0.1
 )
