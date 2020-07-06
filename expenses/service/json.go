@@ -35,7 +35,7 @@ func (es *expenseService) Create(w http.ResponseWriter, req *http.Request) {
 func (es *expenseService) Index(w http.ResponseWriter, req *http.Request) {
 	user := req.Context().Value(loggedInUserKey).(entities.User)
 
-	expenses, err := es.RetrieveAll(user)
+	expenses, err := es.RetrieveBy(user)
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusUnprocessableEntity)

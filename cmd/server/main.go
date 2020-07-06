@@ -2,13 +2,20 @@ package main
 
 import (
 	"net/http"
+
 	"algogrit.com/yaes-server/internal/config"
-	log "github.com/sirupsen/logrus"
 	"algogrit.com/yaes-server/internal/db"
 	"algogrit.com/yaes-server/pkg/routes"
+	log "github.com/sirupsen/logrus"
 
-	userService "algogrit.com/yaes-server/users/service"
 	userRepo "algogrit.com/yaes-server/users/repository"
+	userService "algogrit.com/yaes-server/users/service"
+
+	expenseRepo "algogrit.com/yaes-server/expenses/repository"
+	expenseService "algogrit.com/yaes-server/expenses/service"
+
+	payableRepo "algogrit.com/yaes-server/payables/repository"
+	payableService "algogrit.com/yaes-server/payables/service"
 )
 
 func main() {
@@ -28,6 +35,16 @@ func main() {
 	us := userService.New(ur)
 
 	r.SetUserRoutes(us)
+
+	er := expenseRepo.New(dbInstance)
+	es := expenseService.New(er)
+
+	r.SetExpenseRoutes(es)
+
+	pr := payableRepo.New(dbInstance)
+	ps := payableService.New(pr)
+
+	r.SetPayableRoutes(ps)
 
 	http.ListenAndServe(":"+cfg.Port, r)
 }

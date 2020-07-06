@@ -9,14 +9,14 @@ type payableRepository struct {
 	*gorm.DB
 }
 
-func (pr *payableRepository) RetrieveAll(u entities.User) ([]*entities.Payable, error) {
+func (pr *payableRepository) RetrieveBy(u entities.User) ([]*entities.Payable, error) {
 	var payables []*entities.Payable
-	err := pr.Model(&user).Related(&payables, "Payables").Error
+	err := pr.Model(&u).Related(&payables, "Payables").Error
 
 	return payables, err
 }
 
-func (pr *payableRepository) FindBy(payableID uint64) (*Payable, error) {
+func (pr *payableRepository) FindBy(payableID uint64) (*entities.Payable, error) {
 	var payable entities.Payable
 	err := pr.Preload("Expense").Where("id = ?", payableID).First(&payable).Error
 

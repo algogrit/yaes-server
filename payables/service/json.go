@@ -54,7 +54,7 @@ func (ps *payableService) Update(w http.ResponseWriter, req *http.Request) {
 	json.NewDecoder(req.Body).Decode(payable)
 	payable.ID = uint(payableID)
 
-	if err := ps.Update(payable); err != nil {
+	if err := ps.PayableRepository.Update(payable); err != nil {
 		http.Error(w, err.Error(), http.StatusUnprocessableEntity)
 	}
 
