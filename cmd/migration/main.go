@@ -1,5 +1,14 @@
 package main
 
+import (
+	"github.com/jinzhu/gorm"
+	"algogrit.com/yaes-server/entities"
+	"algogrit.com/yaes-server/internal/config"
+	"algogrit.com/yaes-server/internal/db"
+	log "github.com/sirupsen/logrus"
+
+)
+
 func migrate(instance *gorm.DB) {
 	instance.AutoMigrate(&entities.User{})
 	instance.AutoMigrate(&entities.Expense{})
@@ -21,7 +30,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	dbInstance := db.New(cfg.AppEnv, dbURL, dbName)
+	dbInstance := db.New(cfg.AppEnv, cfg.DBUrl, cfg.DBName)
 
 	migrate(dbInstance)
 }
