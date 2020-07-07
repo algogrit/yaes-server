@@ -6,16 +6,15 @@ import (
 
 	"algogrit.com/yaes-server/entities"
 	"algogrit.com/yaes-server/expenses/repository"
+	"algogrit.com/yaes-server/internal/config"
 )
 
 type expenseService struct {
 	repository.ExpenseRepository
 }
 
-const loggedInUserKey = "LoggedInUser"
-
 func (es *expenseService) Create(w http.ResponseWriter, req *http.Request) {
-	user := req.Context().Value(loggedInUserKey).(entities.User)
+	user := req.Context().Value(config.LoggedInUser).(entities.User)
 
 	var expense entities.Expense
 
@@ -33,7 +32,7 @@ func (es *expenseService) Create(w http.ResponseWriter, req *http.Request) {
 }
 
 func (es *expenseService) Index(w http.ResponseWriter, req *http.Request) {
-	user := req.Context().Value(loggedInUserKey).(entities.User)
+	user := req.Context().Value(config.LoggedInUser).(entities.User)
 
 	expenses, err := es.RetrieveBy(user)
 

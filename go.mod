@@ -17,6 +17,7 @@ require (
 	github.com/jinzhu/gorm v0.0.0-20160404144928-5174cc5c242a
 	github.com/jinzhu/inflection v0.0.0-20170102125226-1c35d901db3d // indirect
 	github.com/jinzhu/now v1.1.1 // indirect
+	github.com/justinas/alice v1.2.0
 	github.com/khaiql/dbcleaner v2.2.1+incompatible // indirect
 	github.com/lib/pq v0.0.0-20171126050459-83612a56d3dd // indirect
 	github.com/mattn/go-sqlite3 v1.14.0 // indirect

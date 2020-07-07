@@ -11,5 +11,6 @@ RUN adduser -D non-root
 USER non-root
 WORKDIR /app
 COPY --from=builder /go/src/algogrit.com/yaes-server/yaes-server /app
-EXPOSE 12345
+EXPOSE 8000
+EXPOSE 8080
 ENTRYPOINT ./yaes-server

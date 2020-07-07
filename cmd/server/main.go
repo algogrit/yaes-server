@@ -5,7 +5,10 @@ import (
 
 	"algogrit.com/yaes-server/internal/config"
 	"algogrit.com/yaes-server/internal/db"
+	"algogrit.com/yaes-server/pkg/auth"
 	"algogrit.com/yaes-server/pkg/routes"
+	"github.com/codegangsta/negroni"
+	"github.com/gorilla/mux"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	log "github.com/sirupsen/logrus"
 
@@ -21,6 +24,21 @@ import (
 	payableService "algogrit.com/yaes-server/payables/service"
 )
 
+func startDiagnosticsServer(cfg config.Config) {
+	r := mux.NewRouter()
+	hs := healthService.New(cfg.AppEnv)
+
+	r.HandleFunc("/", hs.Healthz).Methods("GET")
+	r.HandleFunc("/healthz", hs.Healthz).Methods("GET")
+	r.Handle("/metrics", promhttp.Handler())
+
+	n := negroni.Classic()
+	n.UseHandler(r)
+
+	log.Info("Starting diagnostics server on port: ", cfg.DiagnosticsPort)
+	http.ListenAndServe(":"+cfg.DiagnosticsPort, n)
+}
+
 func main() {
 	cfg := config.New()
 
@@ -33,7 +51,7 @@ func main() {
 	dbInstance := db.New(cfg.AppEnv, cfg.DBUrl, cfg.DBName)
 
 	ur := userRepo.New(dbInstance)
-	us := userService.New(ur)
+	us := userService.New(ur, cfg.JWTSigningKey)
 
 	er := expenseRepo.New(dbInstance)
 	es := expenseService.New(er)
@@ -41,14 +59,14 @@ func main() {
 	pr := payableRepo.New(dbInstance)
 	ps := payableService.New(pr)
 
-	r := routes.New(us, es, ps)
+	auth := auth.New(ur, cfg.JWTSigningKey)
+	appRouter := routes.New(us, es, ps, auth)
 
-	hs := healthService.New(cfg.AppEnv)
+	n := negroni.Classic()
+	n.UseHandler(appRouter)
 
-	r.HandleFunc("/", hs.Healthz).Methods("GET")
-	r.HandleFunc("/healthz", hs.Healthz).Methods("GET")
+	go startDiagnosticsServer(cfg)
 
-	r.Handle("/metrics", promhttp.Handler())
-
-	http.ListenAndServe(":"+cfg.Port, r)
+	log.Info("Starting server on port: ", cfg.Port)
+	log.Fatal(http.ListenAndServe(":"+cfg.Port, n))
 }

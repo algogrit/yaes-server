@@ -1,22 +1,17 @@
 package service
 
 import (
-	"context"
 	"encoding/json"
 	"net/http"
 
 	"algogrit.com/yaes-server/entities"
+	"algogrit.com/yaes-server/internal/config"
 	"algogrit.com/yaes-server/users/repository"
-	jwt "github.com/dgrijalva/jwt-go"
 )
-
-// TODO: Pick this from config
-const loggedInUserKey = "LoggedInUser"
-
-var jwtSigningKey = "483175006c1088c849502ef22406ac4e"
 
 type userService struct {
 	repository.UserRepository
+	jwtSigningKey string
 }
 
 func (us *userService) Create(w http.ResponseWriter, req *http.Request) {
@@ -43,7 +38,7 @@ func (us *userService) Create(w http.ResponseWriter, req *http.Request) {
 }
 
 func (us *userService) Index(w http.ResponseWriter, req *http.Request) {
-	user := req.Context().Value(loggedInUserKey).(entities.User)
+	user := req.Context().Value(config.LoggedInUser).(entities.User)
 
 	users, err := us.RetrieveOthers(user)
 
@@ -66,7 +61,7 @@ func (us *userService) Login(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	token, err := user.NewJWT(jwtSigningKey)
+	token, err := user.NewJWT(us.jwtSigningKey)
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusUnprocessableEntity)
@@ -77,23 +72,7 @@ func (us *userService) Login(w http.ResponseWriter, req *http.Request) {
 	json.NewEncoder(w).Encode(tokenMap)
 }
 
-func (us *userService) Middleware(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
-	jwtToken := r.Context().Value("user").(*jwt.Token)
-	userID := jwtToken.Claims.(jwt.MapClaims)["userID"]
-
-	user, err := us.UserRepository.FindByID(userID)
-
-	if err != nil {
-		http.Error(w, "Not Authorized", http.StatusUnauthorized)
-		return
-	}
-
-	newRequest := r.WithContext(context.WithValue(r.Context(), loggedInUserKey, user))
-
-	next(w, newRequest)
-}
-
 // New creates a new instance of UserService
-func New(repo repository.UserRepository) UserService {
-	return &userService{repo}
+func New(repo repository.UserRepository, jwtSigningKey string) UserService {
+	return &userService{repo, jwtSigningKey}
 }

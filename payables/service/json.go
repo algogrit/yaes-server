@@ -6,18 +6,17 @@ import (
 	"strconv"
 
 	"algogrit.com/yaes-server/entities"
+	"algogrit.com/yaes-server/internal/config"
 	"algogrit.com/yaes-server/payables/repository"
 	"github.com/gorilla/mux"
 )
-
-const loggedInUserKey = "LoggedInUser"
 
 type payableService struct {
 	repository.PayableRepository
 }
 
 func (ps *payableService) Index(w http.ResponseWriter, req *http.Request) {
-	user := req.Context().Value(loggedInUserKey).(entities.User)
+	user := req.Context().Value(config.LoggedInUser).(entities.User)
 
 	payables, err := ps.RetrieveBy(user)
 
@@ -30,7 +29,7 @@ func (ps *payableService) Index(w http.ResponseWriter, req *http.Request) {
 }
 
 func (ps *payableService) Update(w http.ResponseWriter, req *http.Request) {
-	user := req.Context().Value(loggedInUserKey).(entities.User)
+	user := req.Context().Value(config.LoggedInUser).(entities.User)
 
 	payableID, err := strconv.ParseUint(mux.Vars(req)["payableID"], 10, 32)
 
