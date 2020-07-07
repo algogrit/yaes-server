@@ -10,7 +10,7 @@ FROM alpine:latest
 RUN adduser -D non-root
 USER non-root
 WORKDIR /app
-COPY --from=builder /app/yaes-server /app
+COPY --from=builder /app/server /app
 EXPOSE 8000
 EXPOSE 8080
-ENTRYPOINT ./yaes-server
+ENTRYPOINT ./server

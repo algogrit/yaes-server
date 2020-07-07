@@ -4,3 +4,5 @@ gin-bin
 /yaes-server
 devops/k8s/secrets.yaml
 main
+server
+migration
