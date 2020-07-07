@@ -7,26 +7,31 @@ create-all-db:
 
 setup-db:
 	createdb ${DB_NAME}
+	${MAKE} migrate
 
 recreate-db:
 	dropdb ${DB_NAME}
 	createdb ${DB_NAME}
+	${MAKE} migrate
 
 setup: setup-db
 	dep ensure
 
 build:
-	go build ./cmd/yaes-server
+	go build ./cmd/server
+
+migrate:
+	go run ./cmd/migration
 
 linux:
-	GOOS=linux CGO_ENABLED=0 go build ./cmd/yaes-server
+	GOOS=linux CGO_ENABLED=0 go build ./cmd/server
 
 prod-build: GO_APP_ENV = production
 prod-build: build
 
 run: PORT = 3000
 run:
-	go run ./cmd/yaes-server/main.go
+	go run ./cmd/server/main.go
 
 prod-run: GO_APP_ENV = production
 prod-run: run
@@ -35,7 +40,7 @@ dev-setup:
 	go get github.com/codegangsta/gin
 
 dev-run:
-	gin --build ./cmd/yaes-server
+	gin --build ./cmd/server
 
 setup-docs:
 	go get -v -u github.com/go-swagger/go-swagger/cmd/swagger

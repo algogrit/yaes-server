@@ -59,8 +59,8 @@ func main() {
 	pr := payableRepo.New(dbInstance)
 	ps := payableService.New(pr)
 
-	auth := auth.New(ur, cfg.JWTSigningKey)
-	appRouter := routes.New(us, es, ps, auth)
+	jwtChain := auth.New(ur, cfg.JWTSigningKey).Middleware()
+	appRouter := routes.New(us, es, ps, jwtChain)
 
 	n := negroni.Classic()
 	n.UseHandler(appRouter)

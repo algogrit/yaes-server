@@ -5,43 +5,45 @@ import (
 
 	expenseService "algogrit.com/yaes-server/expenses/service"
 	payableService "algogrit.com/yaes-server/payables/service"
-	"algogrit.com/yaes-server/pkg/auth"
 	userService "algogrit.com/yaes-server/users/service"
 
 	"github.com/gorilla/mux"
+	"github.com/justinas/alice"
 )
 
+// Router struct implements http.Handler through mux.Router
 type Router struct {
 	*mux.Router
 
-	us   userService.UserService
-	es   expenseService.ExpenseService
-	ps   payableService.PayableService
-	auth auth.Auth
-}
-
-func New(us userService.UserService,
-	es expenseService.ExpenseService,
-	ps payableService.PayableService,
-	auth auth.Auth) Router {
-
-	r := mux.NewRouter()
-	routes := Router{r, us, es, ps, auth}
-
-	routes.initRoutes()
-
-	return routes
+	us       userService.UserService
+	es       expenseService.ExpenseService
+	ps       payableService.PayableService
+	jwtChain alice.Chain
 }
 
 func (r *Router) initRoutes() {
 	r.HandleFunc("/users", r.us.Create).Methods("POST")
 	r.HandleFunc("/login", r.us.Login).Methods("POST")
 
-	r.Handle("/users", r.auth.Middleware().Then((http.HandlerFunc(r.us.Index)))).Methods("GET")
+	r.Handle("/users", r.jwtChain.Then((http.HandlerFunc(r.us.Index)))).Methods("GET")
 
-	r.Handle("/expenses", r.auth.Middleware().Then((http.HandlerFunc(r.es.Create)))).Methods("POST")
-	r.Handle("/expenses", r.auth.Middleware().Then((http.HandlerFunc(r.es.Index)))).Methods("GET")
+	r.Handle("/expenses", r.jwtChain.Then((http.HandlerFunc(r.es.Create)))).Methods("POST")
+	r.Handle("/expenses", r.jwtChain.Then((http.HandlerFunc(r.es.Index)))).Methods("GET")
 
-	r.Handle("/payables", r.auth.Middleware().Then((http.HandlerFunc(r.ps.Index)))).Methods("GET")
-	r.Handle("/payables/{payableID}", r.auth.Middleware().Then((http.HandlerFunc(r.ps.Update)))).Methods("PUT")
+	r.Handle("/payables", r.jwtChain.Then((http.HandlerFunc(r.ps.Index)))).Methods("GET")
+	r.Handle("/payables/{payableID}", r.jwtChain.Then((http.HandlerFunc(r.ps.Update)))).Methods("PUT")
+}
+
+// New initializes the Router
+func New(us userService.UserService,
+	es expenseService.ExpenseService,
+	ps payableService.PayableService,
+	jwtChain alice.Chain) Router {
+
+	r := mux.NewRouter()
+	routes := Router{r, us, es, ps, jwtChain}
+
+	routes.initRoutes()
+
+	return routes
 }
