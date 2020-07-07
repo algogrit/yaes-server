@@ -13,11 +13,11 @@ var databaseMap = map[string]string{
 	"production":  "yaes",
 }
 
-func getConnectionString(dbUrl string, dbName string) string {
+func getConnectionString(dbURL string, dbName string) string {
 	var dbConnectionString string
 
-	if dbUrl != "" {
-		dbConnectionString = dbUrl
+	if dbURL != "" {
+		dbConnectionString = dbURL
 	} else {
 		dbConnectionString = "dbname=" + dbName + " sslmode=disable"
 	}
@@ -27,8 +27,9 @@ func getConnectionString(dbUrl string, dbName string) string {
 	return dbConnectionString
 }
 
-func New(goAppEnvironment string, dbUrl string, dbName string) *gorm.DB {
-	dbConnectionString := getConnectionString(dbUrl, dbName)
+// New returns an instance of db connection
+func New(goAppEnvironment string, dbURL string, dbName string) *gorm.DB {
+	dbConnectionString := getConnectionString(dbURL, dbName)
 
 	localDB, err := gorm.Open("postgres", dbConnectionString)
 

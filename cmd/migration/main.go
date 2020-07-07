@@ -1,12 +1,11 @@
 package main
 
 import (
-	"github.com/jinzhu/gorm"
 	"algogrit.com/yaes-server/entities"
 	"algogrit.com/yaes-server/internal/config"
 	"algogrit.com/yaes-server/internal/db"
+	"github.com/jinzhu/gorm"
 	log "github.com/sirupsen/logrus"
-
 )
 
 func migrate(instance *gorm.DB) {

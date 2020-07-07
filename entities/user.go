@@ -3,8 +3,8 @@ package entities
 import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/jinzhu/gorm"
-	"golang.org/x/crypto/bcrypt"
 	log "github.com/sirupsen/logrus"
+	"golang.org/x/crypto/bcrypt"
 )
 
 // User represents a single user in the system
