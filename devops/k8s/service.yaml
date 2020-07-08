@@ -48,6 +48,8 @@ spec:
           value: yaes-db-postgresql
         - name: DB_NAME
           value: yaes
+        - name: DB_SSL_MODE
+          value: disable
         - name: GO_APP_ENV
           value: "production"
         - name: PORT

@@ -21,6 +21,7 @@ type Config struct {
 	DBHost          string `env:"DB_HOST" envDefault:"yaes-db-postgresql"`
 	DBPort          string `env:"DB_PORT" envDefault:"5432"`
 	DBName          string `env:"DB_NAME" envDefault:"yaes"`
+	DBSSLMode       string `env:"DB_SSL_MODE" envDefault:"disable"`
 	DBUrl           string `env:"DATABASE_URL" envDefault:""`
 	AppEnv          string `env:"GO_APP_ENV" envDefault:"production"`
 	Port            string `env:"PORT" envDefault:"12345"`

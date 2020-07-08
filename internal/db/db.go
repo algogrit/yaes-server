@@ -7,7 +7,7 @@ import (
 	log "github.com/sirupsen/logrus"
 
 	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/postgres"
+	_ "github.com/jinzhu/gorm/dialects/postgres" // For init connection to postgres
 )
 
 var databaseMap = map[string]string{
@@ -22,7 +22,7 @@ func getConnectionString(cfg config.Config) string {
 	if cfg.DBUrl != "" {
 		dbURL = cfg.DBUrl
 	} else {
-		dbURL = fmt.Sprintf("postgres://%s:%s@%s:%s/%s", cfg.DBUser, cfg.DBPassword, cfg.DBHost, cfg.DBPort, cfg.DBName)
+		dbURL = fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=%s", cfg.DBUser, cfg.DBPassword, cfg.DBHost, cfg.DBPort, cfg.DBName, cfg.DBSSLMode)
 	}
 
 	log.Info("DB connection string: " + dbURL)
