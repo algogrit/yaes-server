@@ -29,7 +29,9 @@ func main() {
 		log.Fatal(err)
 	}
 
-	dbInstance := db.New(cfg.AppEnv, cfg.DBUrl, cfg.DBName)
+	dbInstance := db.New(cfg)
+
+	log.Infof("Initializing migration in %s environment...\n", cfg.AppEnv)
 
 	migrate(dbInstance)
 }

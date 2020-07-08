@@ -48,7 +48,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	dbInstance := db.New(cfg.AppEnv, cfg.DBUrl, cfg.DBName)
+	dbInstance := db.New(cfg)
 
 	ur := userRepo.New(dbInstance)
 	us := userService.New(ur, cfg.JWTSigningKey)
@@ -67,6 +67,6 @@ func main() {
 
 	go startDiagnosticsServer(cfg)
 
-	log.Info("Starting server on port: ", cfg.Port)
+	log.Infof("Starting server on port: %s in %s mode\n", cfg.Port, cfg.AppEnv)
 	log.Fatal(http.ListenAndServe(":"+cfg.Port, n))
 }

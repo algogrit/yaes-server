@@ -2,5 +2,6 @@
 
 set -e
 
-# ./devops/k8s/helm/postgres/install.sh
+./devops/k8s/helm/prometheus/install.sh
 ./devops/k8s/helm/ingress/install.sh
+./devops/k8s/helm/postgres/install.sh

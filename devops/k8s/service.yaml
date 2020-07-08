@@ -16,13 +16,19 @@ spec:
         app: yaes
     spec:
       restartPolicy: Always
+      # initContainers:
+      # - name: migrations
+      #   image: gauravagarwalr/yaes-migration:latest
+      #   imagePullPolicy: IfNotPresent
       containers:
-      - name: yaes
+      - name: yaes-server
         image: gauravagarwalr/yaes-server:latest
         imagePullPolicy: IfNotPresent
         ports:
         - name: http-server
           containerPort: 8080
+        - name: diagnostics
+          containerPort: 8000
         resources:
           requests:
             memory: "256Mi"
@@ -31,24 +37,23 @@ spec:
             memory: "1Gi"
             cpu: "1000m"
         env:
-        - name: DB_NAME
-          value: yaes
-        - name: DATABASE_URL
+        - name: DB_USER
+          value: yaesuser
+        - name: DB_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: yaes-secret
-              key: database_url
+              name: yaes-db-postgresql
+              key: postgresql-password
+        - name: DB_HOST
+          value: yaes-db-postgresql
+        - name: DB_NAME
+          value: yaes
         - name: GO_APP_ENV
           value: "production"
         - name: PORT
           value: "8080"
-        - name: SENTRY_DSN
-          valueFrom:
-            secretKeyRef:
-              name: yaes-secret
-              key: sentry_dsn
-        - name: SENTRY_RELEASE
-          value: "production"
+        - name: DIAGNOSTICS_PORT
+          value: "8000"
 
 ---
 

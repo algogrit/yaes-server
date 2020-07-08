@@ -1,6 +1,9 @@
 package db
 
 import (
+	"fmt"
+
+	"algogrit.com/yaes-server/internal/config"
 	log "github.com/sirupsen/logrus"
 
 	"github.com/jinzhu/gorm"
@@ -13,33 +16,33 @@ var databaseMap = map[string]string{
 	"production":  "yaes",
 }
 
-func getConnectionString(dbURL string, dbName string) string {
-	var dbConnectionString string
+func getConnectionString(cfg config.Config) string {
+	var dbURL string
 
-	if dbURL != "" {
-		dbConnectionString = dbURL
+	if cfg.DBUrl != "" {
+		dbURL = cfg.DBUrl
 	} else {
-		dbConnectionString = "dbname=" + dbName + " sslmode=disable"
+		dbURL = fmt.Sprintf("postgres://%s:%s@%s:%s/%s", cfg.DBUser, cfg.DBPassword, cfg.DBHost, cfg.DBPort, cfg.DBName)
 	}
 
-	log.Info("DB connection string: " + dbConnectionString)
+	log.Info("DB connection string: " + dbURL)
 
-	return dbConnectionString
+	return dbURL
 }
 
 // New returns an instance of db connection
-func New(goAppEnvironment string, dbURL string, dbName string) *gorm.DB {
-	dbConnectionString := getConnectionString(dbURL, dbName)
+func New(cfg config.Config) *gorm.DB {
+	dbURL := getConnectionString(cfg)
 
-	localDB, err := gorm.Open("postgres", dbConnectionString)
+	localDB, err := gorm.Open("postgres", dbURL)
 
 	if err != nil {
-		log.Fatal("Database connection error. Could not connect to database: ", dbConnectionString, ". ", err)
+		log.Fatal("Database connection error. Could not connect to database: ", dbURL, ". ", err)
 	}
 
-	localDB.LogMode(goAppEnvironment == "development")
+	localDB.LogMode(cfg.AppEnv == "development")
 
-	if goAppEnvironment == "production" {
+	if cfg.AppEnv == "production" {
 		localDB.DB().SetMaxIdleConns(4)
 		localDB.DB().SetMaxOpenConns(20)
 	}

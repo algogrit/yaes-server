@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-helm delete --purge yaes-db
+helm uninstall yaes-db

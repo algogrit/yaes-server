@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-helm install --name yaes-db stable/postgresql
+helm install yaes-db -f devops/k8s/helm/postgres/values.yaml bitnami/postgresql

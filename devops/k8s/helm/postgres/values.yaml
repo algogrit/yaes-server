@@ -1,0 +1,7 @@
+# Chart: https://github.com/helm/charts/tree/master/stable/postgresql
+global:
+  postgresql:
+    postgresqlDatabase: yaes
+    postgresqlUsername: yaesuser
+metrics:
+  enabled: true
