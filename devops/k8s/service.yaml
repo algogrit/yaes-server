@@ -16,14 +16,30 @@ spec:
         app: yaes
     spec:
       restartPolicy: Always
-      # initContainers:
-      # - name: migrations
-      #   image: gauravagarwalr/yaes-migration:latest
-      #   imagePullPolicy: IfNotPresent
+      initContainers:
+      - name: migrations
+        image: gauravagarwalr/yaes-migration:latest
+        imagePullPolicy: Always
+        env:
+        - name: DB_USER
+          value: yaesuser
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: yaes-db-postgresql
+              key: postgresql-password
+        - name: DB_HOST
+          value: yaes-db-postgresql
+        - name: DB_NAME
+          value: yaes
+        - name: DB_SSL_MODE
+          value: disable
+        - name: GO_APP_ENV
+          value: "production"
       containers:
       - name: yaes-server
         image: gauravagarwalr/yaes-server:latest
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: Always
         ports:
         - name: http-server
           containerPort: 8080
@@ -67,8 +83,12 @@ metadata:
     app: yaes
 spec:
   ports:
-  - port: 8080
+  - name: yaes-service
+    port: 8080
     targetPort: http-server
+  - name: diag-service
+    port: 8000
+    targetPort: diagnostics
   selector:
     app: yaes
   type: ClusterIP
