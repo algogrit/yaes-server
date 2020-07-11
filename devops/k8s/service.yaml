@@ -19,7 +19,7 @@ spec:
       initContainers:
       - name: migrations
         image: gauravagarwalr/yaes-migration:latest
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
         env:
         - name: DB_USER
           value: yaesuser
@@ -39,7 +39,7 @@ spec:
       containers:
       - name: yaes-server
         image: gauravagarwalr/yaes-server:latest
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
         ports:
         - name: http-server
           containerPort: 8080

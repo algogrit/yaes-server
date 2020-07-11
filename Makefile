@@ -73,13 +73,16 @@ k8s-reapply-svc:
 
 # username: admin
 # password: prom-operator
-pf-grafana:
+kctl-pf-grafana:
 	kubectl port-forward svc/monitoring-grafana 20000:80 -n monitoring
 
-pf-prometheus:
+kctl-pf-prometheus:
 	kubectl port-forward svc/monitoring-prometheus-oper-prometheus 9090 -n monitoring
 
 # export POSTGRES_PASSWORD=$(kubectl get secret --namespace default yaes-db-postgresql -o jsonpath="{.data.postgresql-password}" | base64 --decode)
 # PGPASSWORD="$POSTGRES_PASSWORD" psql postgres://yaesuser@localhost:5433/yaes?sslmode=disable
-pf-postgres:
+kctl-pf-postgres:
 	kubectl port-forward --namespace default svc/yaes-db-postgresql 5433:5432
+
+kctl-logs-yaes:
+	kubectl logs -f -l app=yaes
