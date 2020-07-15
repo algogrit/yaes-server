@@ -27,15 +27,19 @@ Primary purpose of the web app is to keep track of your expenses, payables and r
 ### Layers
 
 - Entities (entities)
+
   Defines all the Models in the application
 
 - Repository (users/repository, expenses/repository, payables/repository)
+
   Encapsulates the interaction with the database. This is the lowest layer in the application.
 
 - Services (users/service, expenses/service, payables/service)
+
   Encapsulates the interaction with application over an http API
 
 - Binaries (cmd/server, cmd/migration)
+
   The code in cmd/server ties all the layers together, in order the start the app.
 
 ## Dev
