@@ -1,7 +1,5 @@
-YAES - Yet Another Expense Splitter
------------------------------------
+# YAES (Yet Another Expense Splitter)
 
-### Master Build Status
 [![CircleCI](https://circleci.com/gh/algogrit/yaes-server/tree/master.svg?style=svg)](https://circleci.com/gh/algogrit/yaes-server/tree/master)
 
 Expense Splitting Web App ( similar to Splitwise):
@@ -12,43 +10,54 @@ Primary purpose of the web app is to keep track of your expenses, payables and r
 
 ## Planned Features
 
-    - Add users to your app. You will eventually split expense with them.
-    - Add expense and it can be sharable among selected users.
-    - Visibility of payables and receivables per user.
-    - Visibility of total payables and receivables.
-    - Visibility of all the individual expenses involving you at once place.
-    - Settle up with any user.
-    - Delete any expense.
+- Add users to your app. You will eventually split expense with them.
+- Add expense and it can be sharable among selected users.
+- Visibility of payables and receivables per user.
+- Visibility of total payables and receivables.
+- Visibility of all the individual expenses involving you at once place.
+- Settle up with any user.
+- Delete any expense.
 
-# Dev
+## Clean Architecture by [Robert Martin](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
 
-  ## Setup
+![Clean Architecture](assets/CleanArchitecture.jpg)
 
-    $ go get -u github.com/golang/dep/cmd/dep # Install Dep
+- **Dependency rule**: Source code dependencies can only point inwards
 
-    $ go get -u algogrit.com/yaes-server/cmd/yaes-server
+## Dev
 
-    $ cd $GOPATH/src/algogrit.com/yaes-server
+### Setup
 
-    $ make setup
+```bash
+go get -u algogrit.com/yaes-server/cmd/yaes-server
+cd $GOPATH/src/algogrit.com/yaes-server
+make setup
+```
 
-  ## Run Server
+### Run Server
 
-    $ make run
+```bash
+make run
+```
 
-  ## Dev Run
+### Dev Run
 
-    $ make dev-setup
+```bash
+make dev-setup
+make dev-run
+```
 
-    $ make dev-run
+### Docs
 
-  ## Docs
+```bash
+make setup-docs
 
-    $ make setup-docs
+make docs
+```
 
-    $ make docs
+### Tests
 
-  ## Tests
-
-    $ DB_NAME="yaes-test" make setup-db # Only first time
-    $ make test
+```bash
+DB_NAME="yaes-test" make setup-db # Only first time
+make test
+```
