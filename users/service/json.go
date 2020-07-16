@@ -47,6 +47,10 @@ func (us *userService) Index(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	if users == nil {
+		users = []*entities.User{}
+	}
+
 	json.NewEncoder(w).Encode(users)
 }
 
