@@ -2,7 +2,7 @@ package service_test
 
 import (
 	"context"
-	"io/ioutil"
+	"encoding/json"
 	"net/http"
 	"net/http/httptest"
 
@@ -34,7 +34,13 @@ var _ = Describe("Json", func() {
 
 		rw = httptest.NewRecorder()
 
-		userRepoStub = &repository.InmemUserRepoStub{}
+		retrieveOthersFn := func(u entities.User) (users []*entities.User, err error) {
+			return []*entities.User{
+				&entities.User{Username: "ga"},
+			}, nil
+		}
+
+		userRepoStub = &repository.UserRepoStub{RetrieveOthersFn: retrieveOthersFn}
 		userService = service.New(userRepoStub, jwtSigningKey)
 	})
 
@@ -45,10 +51,15 @@ var _ = Describe("Json", func() {
 
 				response := rw.Result()
 				Expect(response.StatusCode).To(Equal(http.StatusOK))
-				resByte, err := ioutil.ReadAll(response.Body)
-				resString := string(resByte)
-				Expect(err).To(BeNil())
-				Expect(resString).To(Equal("[]\n"))
+
+				// resByte, err := ioutil.ReadAll(response.Body)
+				// resString := string(resByte)
+				// Expect(err).To(BeNil())
+				// Expect(resString).To(Equal("[{\"Username\": \"ga\"}]\n"))
+
+				var users []entities.User
+				json.NewDecoder(response.Body).Decode(&users)
+				Expect(users[0].Username).To(Equal("ga"))
 			})
 		})
 	})
