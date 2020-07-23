@@ -17,13 +17,13 @@ func (ps *payableService) Index(ctx context.Context, user entities.User) ([]*ent
 }
 
 func (ps *payableService) Update(ctx context.Context, user entities.User, payable entities.Payable) (*entities.Payable, error) {
-	_, err := ps.FindBy(payable.ID)
+	existingPayable, err := ps.FindBy(payable.ID)
 
 	if err != nil {
 		return nil, httpError.NotFoundErr().Wrap(err)
 	}
 
-	if payable.Expense.CreatedBy != user.ID {
+	if existingPayable.Expense.CreatedBy != user.ID {
 		return nil, httpError.UnauthorizedErr()
 	}
 
