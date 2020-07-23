@@ -20,6 +20,7 @@ import (
 	expenseRepo "algogrit.com/yaes-server/expenses/repository"
 	expenseService "algogrit.com/yaes-server/expenses/service"
 
+	payableHTTP "algogrit.com/yaes-server/payables/http"
 	payableRepo "algogrit.com/yaes-server/payables/repository"
 	payableService "algogrit.com/yaes-server/payables/service"
 )
@@ -51,6 +52,8 @@ func main() {
 	dbInstance := db.New(cfg)
 
 	ur := userRepo.New(dbInstance)
+	jwtChain := auth.New(ur, cfg.JWTSigningKey).Middleware()
+
 	us := userService.New(ur, cfg.JWTSigningKey)
 
 	er := expenseRepo.New(dbInstance)
@@ -58,9 +61,11 @@ func main() {
 
 	pr := payableRepo.New(dbInstance)
 	ps := payableService.New(pr)
+	payableHandler := payableHTTP.NewHTTPHandler(ps, jwtChain)
 
-	jwtChain := auth.New(ur, cfg.JWTSigningKey).Middleware()
-	appRouter := routes.New(us, es, ps, jwtChain)
+	appRouter := routes.New(us, es, jwtChain)
+
+	payableHandler.Setup(appRouter.Router)
 
 	n := negroni.Classic()
 	n.UseHandler(appRouter)
