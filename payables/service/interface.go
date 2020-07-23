@@ -1,9 +1,14 @@
 package service
 
-import "net/http"
+import (
+	"context"
 
+	"algogrit.com/yaes-server/entities"
+)
+
+// PayableService represents a payable service
 type PayableService interface {
-	Index(http.ResponseWriter, *http.Request)
-	Update(http.ResponseWriter, *http.Request)
+	Index(ctx context.Context, user entities.User) ([]*entities.Payable, error)
+	Update(ctx context.Context, user entities.User, payable entities.Payable) (*entities.Payable, error)
 	// TODO: Add handler for POST /payables
 }

@@ -16,7 +16,7 @@ func (pr *payableRepository) RetrieveBy(u entities.User) ([]*entities.Payable, e
 	return payables, err
 }
 
-func (pr *payableRepository) FindBy(payableID uint64) (*entities.Payable, error) {
+func (pr *payableRepository) FindBy(payableID uint) (*entities.Payable, error) {
 	var payable entities.Payable
 	err := pr.Preload("Expense").Where("id = ?", payableID).First(&payable).Error
 

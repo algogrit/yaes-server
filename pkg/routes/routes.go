@@ -1,8 +1,6 @@
 package routes
 
 import (
-	"net/http"
-
 	expenseService "algogrit.com/yaes-server/expenses/service"
 	userService "algogrit.com/yaes-server/users/service"
 
@@ -23,10 +21,10 @@ func (r *Router) initRoutes() {
 	r.HandleFunc("/users", r.us.Create).Methods("POST")
 	r.HandleFunc("/login", r.us.Login).Methods("POST")
 
-	r.Handle("/users", r.jwtChain.Then((http.HandlerFunc(r.us.Index)))).Methods("GET")
+	r.Handle("/users", r.jwtChain.ThenFunc(r.us.Index)).Methods("GET")
 
-	r.Handle("/expenses", r.jwtChain.Then((http.HandlerFunc(r.es.Create)))).Methods("POST")
-	r.Handle("/expenses", r.jwtChain.Then((http.HandlerFunc(r.es.Index)))).Methods("GET")
+	r.Handle("/expenses", r.jwtChain.ThenFunc(r.es.Create)).Methods("POST")
+	r.Handle("/expenses", r.jwtChain.ThenFunc(r.es.Index)).Methods("GET")
 }
 
 // New initializes the Router

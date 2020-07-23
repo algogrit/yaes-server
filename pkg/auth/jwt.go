@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"algogrit.com/yaes-server/internal/config"
+	httpError "algogrit.com/yaes-server/pkg/http_error"
 	"algogrit.com/yaes-server/users/repository"
 	jwtmiddleware "github.com/auth0/go-jwt-middleware"
 	jwt "github.com/dgrijalva/jwt-go"
@@ -35,7 +36,7 @@ func (j *jwtAuth) setUser(h http.Handler) http.Handler {
 		user, err := j.UserRepository.FindByID(userID)
 
 		if err != nil {
-			http.Error(w, "Not Authorized", http.StatusUnauthorized)
+			httpError.Write(w, httpError.UnauthorizedErr().Wrap(err))
 			return
 		}
 
