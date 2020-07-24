@@ -1,6 +1,7 @@
 package service
 
-type createUserForm struct {
+// CreateUserRequest contains the user fields
+type CreateUserRequest struct {
 	Username     string
 	FirstName    string
 	LastName     string
@@ -8,7 +9,11 @@ type createUserForm struct {
 	Password     string
 }
 
-type loginForm struct {
+// LoginRequest contains the credentials
+type LoginRequest struct {
 	Username string
 	Password string
 }
+
+// LoginResponse contains the valid auth token
+type LoginResponse map[string]string

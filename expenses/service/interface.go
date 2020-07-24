@@ -7,6 +7,6 @@ import (
 )
 
 type ExpenseService interface {
-	Index(ctx context.Context, user entities.User) ([]*entities.Expense, error)
-	Create(ctx context.Context, user entities.User, expense entities.Expense) (*entities.Expense, error)
+	Index(ctx context.Context, currentUser entities.User) ([]*entities.Expense, error)
+	Create(ctx context.Context, currentUser entities.User, expense entities.Expense) (*entities.Expense, error)
 }

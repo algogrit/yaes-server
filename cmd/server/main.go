@@ -6,7 +6,6 @@ import (
 	"algogrit.com/yaes-server/internal/config"
 	"algogrit.com/yaes-server/internal/db"
 	"algogrit.com/yaes-server/pkg/auth"
-	"algogrit.com/yaes-server/pkg/routes"
 	"github.com/codegangsta/negroni"
 	"github.com/gorilla/mux"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
@@ -14,6 +13,7 @@ import (
 
 	healthService "algogrit.com/yaes-server/health/service"
 
+	userHTTP "algogrit.com/yaes-server/users/http"
 	userRepo "algogrit.com/yaes-server/users/repository"
 	userService "algogrit.com/yaes-server/users/service"
 
@@ -56,6 +56,7 @@ func main() {
 	jwtChain := auth.New(ur, cfg.JWTSigningKey).Middleware()
 
 	us := userService.New(ur, cfg.JWTSigningKey)
+	userHandler := userHTTP.NewHTTPHandler(us, jwtChain)
 
 	er := expenseRepo.New(dbInstance)
 	es := expenseService.New(er)
@@ -65,13 +66,11 @@ func main() {
 	ps := payableService.New(pr)
 	payableHandler := payableHTTP.NewHTTPHandler(ps, jwtChain)
 
-	appRouter := routes.New(us, es, jwtChain)
-
-	payableHandler.Setup(appRouter.Router)
-	expenseHandler.Setup(appRouter.Router)
+	payableHandler.Setup(userHandler.Router)
+	expenseHandler.Setup(userHandler.Router)
 
 	n := negroni.Classic()
-	n.UseHandler(appRouter)
+	n.UseHandler(userHandler.Router)
 
 	go startDiagnosticsServer(cfg)
 

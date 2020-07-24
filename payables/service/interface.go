@@ -8,7 +8,7 @@ import (
 
 // PayableService represents a payable service
 type PayableService interface {
-	Index(ctx context.Context, user entities.User) ([]*entities.Payable, error)
-	Update(ctx context.Context, user entities.User, payable entities.Payable) (*entities.Payable, error)
+	Index(ctx context.Context, currentUser entities.User) ([]*entities.Payable, error)
+	Update(ctx context.Context, currentUser entities.User, payable entities.Payable) (*entities.Payable, error)
 	// TODO: Add handler for POST /payables
 }
