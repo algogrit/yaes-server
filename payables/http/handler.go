@@ -27,6 +27,7 @@ func (h *Handler) Index(w http.ResponseWriter, req *http.Request) {
 
 	if err != nil {
 		httpError.Write(w, err)
+		return
 	}
 
 	json.NewEncoder(w).Encode(payables)

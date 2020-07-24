@@ -13,7 +13,6 @@ type Router struct {
 	*mux.Router
 
 	us       userService.UserService
-	es       expenseService.ExpenseService
 	jwtChain alice.Chain
 }
 
@@ -22,9 +21,6 @@ func (r *Router) initRoutes() {
 	r.HandleFunc("/login", r.us.Login).Methods("POST")
 
 	r.Handle("/users", r.jwtChain.ThenFunc(r.us.Index)).Methods("GET")
-
-	r.Handle("/expenses", r.jwtChain.ThenFunc(r.es.Create)).Methods("POST")
-	r.Handle("/expenses", r.jwtChain.ThenFunc(r.es.Index)).Methods("GET")
 }
 
 // New initializes the Router
@@ -33,7 +29,7 @@ func New(us userService.UserService,
 	jwtChain alice.Chain) Router {
 
 	r := mux.NewRouter()
-	routes := Router{r, us, es, jwtChain}
+	routes := Router{r, us, jwtChain}
 
 	routes.initRoutes()
 
