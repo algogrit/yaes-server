@@ -19,7 +19,7 @@ type Handler struct {
 	*mux.Router
 }
 
-func (h *Handler) Index(w http.ResponseWriter, req *http.Request) {
+func (h *Handler) index(w http.ResponseWriter, req *http.Request) {
 	user := req.Context().Value(config.LoggedInUser).(entities.User)
 
 	expenses, err := h.es.Index(req.Context(), user)
@@ -32,7 +32,7 @@ func (h *Handler) Index(w http.ResponseWriter, req *http.Request) {
 	json.NewEncoder(w).Encode(expenses)
 }
 
-func (h *Handler) Create(w http.ResponseWriter, req *http.Request) {
+func (h *Handler) create(w http.ResponseWriter, req *http.Request) {
 	user := req.Context().Value(config.LoggedInUser).(entities.User)
 
 	var expense entities.Expense
@@ -50,9 +50,9 @@ func (h *Handler) Create(w http.ResponseWriter, req *http.Request) {
 
 // Setup routes on an existing Router instance
 func (h *Handler) Setup(r *mux.Router) {
-	r.Handle("/expenses", h.jwtChain.ThenFunc(h.Index)).Methods("GET")
+	r.Handle("/expenses", h.jwtChain.ThenFunc(h.index)).Methods("GET")
 
-	r.Handle("/expenses", h.jwtChain.ThenFunc(h.Create)).Methods("POST")
+	r.Handle("/expenses", h.jwtChain.ThenFunc(h.create)).Methods("POST")
 }
 
 // NewHTTPHandler create a new http.Handler

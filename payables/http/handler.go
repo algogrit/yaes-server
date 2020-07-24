@@ -20,7 +20,7 @@ type Handler struct {
 	*mux.Router
 }
 
-func (h *Handler) Index(w http.ResponseWriter, req *http.Request) {
+func (h *Handler) index(w http.ResponseWriter, req *http.Request) {
 	user := req.Context().Value(config.LoggedInUser).(entities.User)
 
 	payables, err := h.ps.Index(req.Context(), user)
@@ -33,7 +33,7 @@ func (h *Handler) Index(w http.ResponseWriter, req *http.Request) {
 	json.NewEncoder(w).Encode(payables)
 }
 
-func (h *Handler) Update(w http.ResponseWriter, req *http.Request) {
+func (h *Handler) update(w http.ResponseWriter, req *http.Request) {
 	user := req.Context().Value(config.LoggedInUser).(entities.User)
 
 	payableID, err := strconv.ParseUint(mux.Vars(req)["payableID"], 10, 32)
@@ -65,9 +65,9 @@ func (h *Handler) Update(w http.ResponseWriter, req *http.Request) {
 
 // Setup routes on an existing Router instance
 func (h *Handler) Setup(r *mux.Router) {
-	r.Handle("/payables", h.jwtChain.ThenFunc(h.Index)).Methods("GET")
+	r.Handle("/payables", h.jwtChain.ThenFunc(h.index)).Methods("GET")
 
-	r.Handle("/payables/{payableID}", h.jwtChain.ThenFunc(h.Update)).Methods("PUT")
+	r.Handle("/payables/{payableID}", h.jwtChain.ThenFunc(h.update)).Methods("PUT")
 }
 
 // NewHTTPHandler create a new http.Handler
