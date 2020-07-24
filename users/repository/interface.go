@@ -1,5 +1,7 @@
 package repository
 
+//go:generate mockgen -destination mock_$GOFILE -source=$GOFILE -package repository
+
 import (
 	"algogrit.com/yaes-server/entities"
 )

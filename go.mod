@@ -7,6 +7,7 @@ require (
 	github.com/caarlos0/env v3.5.0+incompatible
 	github.com/codegangsta/negroni v1.0.0
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
+	github.com/golang/mock v1.4.3
 	github.com/gorilla/mux v1.7.4
 	github.com/jinzhu/gorm v1.9.14
 	github.com/justinas/alice v1.2.0
