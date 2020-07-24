@@ -1,6 +1,6 @@
 package service
 
-//go:generate mockgen -destination mock_$GOFILE -source=$GOFILE -package service
+//go:generate go run github.com/golang/mock/mockgen -destination mock_$GOFILE -source=$GOFILE -package service
 
 import (
 	"context"

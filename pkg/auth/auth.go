@@ -1,6 +1,6 @@
 package auth
 
-//go:generate mockgen -destination mock_$GOFILE -source=$GOFILE -package auth
+//go:generate go run github.com/golang/mock/mockgen -destination mock_$GOFILE -source=$GOFILE -package auth
 
 import (
 	"github.com/justinas/alice"
