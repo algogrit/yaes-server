@@ -12,18 +12,18 @@ type payableService struct {
 	repository.PayableRepository
 }
 
-func (ps *payableService) Index(ctx context.Context, user entities.User) ([]*entities.Payable, error) {
-	return ps.PayableRepository.RetrieveBy(user)
+func (ps *payableService) Index(ctx context.Context, currentUser entities.User) ([]*entities.Payable, error) {
+	return ps.PayableRepository.RetrieveBy(currentUser)
 }
 
-func (ps *payableService) Update(ctx context.Context, user entities.User, payable entities.Payable) (*entities.Payable, error) {
+func (ps *payableService) Update(ctx context.Context, currentUser entities.User, payable entities.Payable) (*entities.Payable, error) {
 	existingPayable, err := ps.FindBy(payable.ID)
 
 	if err != nil {
 		return nil, httpError.NotFoundErr().Wrap(err)
 	}
 
-	if existingPayable.Expense.CreatedBy != user.ID {
+	if existingPayable.Expense.CreatedBy != currentUser.ID {
 		return nil, httpError.UnauthorizedErr()
 	}
 

@@ -1,4 +1,4 @@
-package service_test
+package http_test
 
 import (
 	"context"
@@ -8,8 +8,11 @@ import (
 
 	"algogrit.com/yaes-server/entities"
 	"algogrit.com/yaes-server/internal/config"
+	userHTTP "algogrit.com/yaes-server/users/http"
 	"algogrit.com/yaes-server/users/repository"
 	"algogrit.com/yaes-server/users/service"
+
+	"github.com/justinas/alice"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
@@ -20,6 +23,7 @@ var _ = Describe("Json", func() {
 
 	var userRepoStub repository.UserRepository
 	var userService service.UserService
+	var userHandler http.Handler
 
 	var req *http.Request
 	var rw *httptest.ResponseRecorder
@@ -40,14 +44,18 @@ var _ = Describe("Json", func() {
 			}, nil
 		}
 
+		// TODO: Use a mock object, gomock?
+		mockAuthChain := alice.Chain{}
+
 		userRepoStub = &repository.UserRepoStub{RetrieveOthersFn: retrieveOthersFn}
 		userService = service.New(userRepoStub, jwtSigningKey)
+		userHandler = userHTTP.NewHTTPHandler(userService, mockAuthChain)
 	})
 
 	Describe("Index", func() {
 		Context("when a user is logged in", func() {
-			It("should serialize a list of users as json", func() {
-				userService.Index(rw, req)
+			XIt("should serialize a list of users as json", func() {
+				userHandler.ServeHTTP(rw, req)
 
 				response := rw.Result()
 				Expect(response.StatusCode).To(Equal(http.StatusOK))
