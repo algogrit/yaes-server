@@ -1,16 +1,17 @@
 # Golang CircleCI 2.0 configuration file
 #
 # Check https://circleci.com/docs/2.0/language-go/ for more details
-version: 2
+version: 2.1
+
 jobs:
-  build:
+  test:
     working_directory: /go/src/algogrit.com/yaes-server
 
     docker:
       - image: circleci/golang:1.14.2
       - image: postgres:9.6
         environment:
-          POSTGRES_PASSWORD=password
+          POSTGRES_PASSWORD: password
 
     steps:
       - checkout
@@ -34,3 +35,62 @@ jobs:
           command: make ci-test
           environment:
             DATABASE_URL: "postgres://postgres:password@localhost:5432/postgres?sslmode=disable"
+
+  build-and-push-image:
+    working_directory: /app
+    docker:
+      - image: docker:17.05.0-ce-git
+    steps:
+      - checkout
+      - setup_remote_docker
+
+      - restore_cache:
+          keys:
+            - v1-{{ .Branch }}
+          paths:
+            - /caches/app.tar
+
+      - run:
+          name: Load Docker image layer cache
+          command: |
+            set +o pipefail
+            docker load -i /caches/app.tar | true
+
+      - run:
+          name: Build application Docker image
+          command: |
+            docker build --cache-from=app --build-arg PROJECT_NAME=migration -t gauravagarwalr/yaes-migration:latest .
+
+            docker build --cache-from=app --build-arg PROJECT_NAME=server -t gauravagarwalr/yaes-server:latest .
+
+      - run:
+          name: Save Docker image layer cache
+          command: |
+            mkdir -p /caches
+            docker save -o /caches/app.tar app
+
+      - save_cache:
+          key: v1-{{ .Branch }}-{{ epoch }}
+          paths:
+            - /caches/app.tar
+
+      - deploy:
+          name: Publish Docker Image to Docker Hub
+          command: |
+            echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
+            docker push $IMAGE_NAME:latest
+
+            docker tag gauravagarwalr/yaes-migration:latest gauravagarwalr/yaes-migration:${CIRCLE_BRANCH}-${CIRCLE_WORKFLOW_ID}
+            docker tag gauravagarwalr/yaes-migration:latest gauravagarwalr/yaes-migration:${CIRCLE_BRANCH}-latest
+
+            docker tag gauravagarwalr/yaes-server:latest gauravagarwalr/yaes-server:${CIRCLE_BRANCH}-${CIRCLE_WORKFLOW_ID}
+            docker tag gauravagarwalr/yaes-server:latest gauravagarwalr/yaes-server:${CIRCLE_BRANCH}-latest
+
+workflows:
+  test_and_deploy:
+    jobs:
+      - test:
+          name: "Run go tests"
+
+      - build-and-push-image:
+          context: dockerhub
