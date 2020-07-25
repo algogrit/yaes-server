@@ -94,10 +94,10 @@ workflows:
   test_and_deploy:
     jobs:
       - test:
-          name: "Run go tests"
+          name: "go test"
 
       - build-and-push-image:
           name: "Build & Push image to Docker Hub"
           context: dockerhub
           requires:
-            - test
+            - go test
