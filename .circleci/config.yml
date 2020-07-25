@@ -36,7 +36,7 @@ jobs:
           environment:
             DATABASE_URL: "postgres://postgres:password@localhost:5432/postgres?sslmode=disable"
 
-  build-and-push-image:
+  build-and-push-migration-image:
     working_directory: /app
     docker:
       - image: docker:stable-git
@@ -49,14 +49,12 @@ jobs:
             - v1-{{ .Branch }}
           paths:
             - /caches/migration.tar
-            - /caches/server.tar
 
       - run:
           name: Load Docker image layer cache
           command: |
             set +o pipefail
             docker load -i /caches/migration.tar | true
-            docker load -i /caches/server.tar | true
             docker images
 
       - run:
@@ -64,20 +62,16 @@ jobs:
           command: |
             docker build --build-arg PROJECT_NAME=migration -t gauravagarwalr/yaes-migration:latest  --cache-from gauravagarwalr/yaes-migration .
 
-            docker build --build-arg PROJECT_NAME=server -t gauravagarwalr/yaes-server:latest  --cache-from gauravagarwalr/yaes-server .
-
       - run:
           name: Save Docker image layer cache
           command: |
             mkdir -p /caches
             docker save -o /caches/migration.tar gauravagarwalr/yaes-migration
-            docker save -o /caches/server.tar gauravagarwalr/yaes-server
 
       - save_cache:
           key: v1-{{ .Branch }}-{{ epoch }}
           paths:
             - /caches/migration.tar
-            - /caches/server.tar
 
       - deploy:
           name: Publish Docker Image to Docker Hub
@@ -85,12 +79,55 @@ jobs:
             docker login -u "$DOCKERHUB_USERNAME" -p "$DOCKERHUB_PASS"
 
             docker push gauravagarwalr/yaes-migration:latest
-            docker push gauravagarwalr/yaes-server:latest
 
             docker tag gauravagarwalr/yaes-migration:latest gauravagarwalr/yaes-migration:${CIRCLE_BRANCH}-${CIRCLE_WORKFLOW_ID}
             docker push gauravagarwalr/yaes-migration:${CIRCLE_BRANCH}-${CIRCLE_WORKFLOW_ID}
             docker tag gauravagarwalr/yaes-migration:latest gauravagarwalr/yaes-migration:${CIRCLE_BRANCH}-latest
             docker push gauravagarwalr/yaes-migration:${CIRCLE_BRANCH}-latest
+
+  build-and-push-server-image:
+    working_directory: /app
+    docker:
+      - image: docker:stable-git
+    steps:
+      - checkout
+      - setup_remote_docker
+
+      - restore_cache:
+          keys:
+            - v1-{{ .Branch }}
+          paths:
+            - /caches/server.tar
+
+      - run:
+          name: Load Docker image layer cache
+          command: |
+            set +o pipefail
+            docker load -i /caches/server.tar | true
+            docker images
+
+      - run:
+          name: Build application Docker image
+          command: |
+            docker build --build-arg PROJECT_NAME=server -t gauravagarwalr/yaes-server:latest  --cache-from gauravagarwalr/yaes-server .
+
+      - run:
+          name: Save Docker image layer cache
+          command: |
+            mkdir -p /caches
+            docker save -o /caches/server.tar gauravagarwalr/yaes-server
+
+      - save_cache:
+          key: v1-{{ .Branch }}-{{ epoch }}
+          paths:
+            - /caches/server.tar
+
+      - deploy:
+          name: Publish Docker Image to Docker Hub
+          command: |
+            docker login -u "$DOCKERHUB_USERNAME" -p "$DOCKERHUB_PASS"
+
+            docker push gauravagarwalr/yaes-server:latest
 
             docker tag gauravagarwalr/yaes-server:latest gauravagarwalr/yaes-server:${CIRCLE_BRANCH}-${CIRCLE_WORKFLOW_ID}
             docker push gauravagarwalr/yaes-server:${CIRCLE_BRANCH}-${CIRCLE_WORKFLOW_ID}
@@ -103,8 +140,14 @@ workflows:
       - test:
           name: "go test"
 
-      - build-and-push-image:
-          name: "Build & Push image to Docker Hub"
+      - build-and-push-migration-image:
+          name: "Build & Push migration image"
+          context: dockerhub
+          requires:
+            - go test
+
+      - build-and-push-server-image:
+          name: "Build & Push server image"
           context: dockerhub
           requires:
             - go test
