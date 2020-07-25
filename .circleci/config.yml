@@ -93,4 +93,7 @@ workflows:
           name: "Run go tests"
 
       - build-and-push-image:
+          name: "Build & Push image to Docker Hub"
           context: dockerhub
+          requires:
+            - test
