@@ -3,6 +3,57 @@
 # Check https://circleci.com/docs/2.0/language-go/ for more details
 version: 2.1
 
+commands:
+  build-and-push-to-docker-hub:
+    parameters:
+      project:
+        default: "server"
+        type: string
+    steps:
+      - checkout
+      - setup_remote_docker
+
+      - restore_cache:
+          keys:
+            - v1-{{ .Branch }}
+          paths:
+            - /caches/<< paramters.project >>.tar
+
+      - run:
+          name: Load Docker image layer cache
+          command: |
+            set +o pipefail
+            docker load -i /caches/<< paramters.project >>.tar | true
+            docker images
+
+      - run:
+          name: Build application Docker image
+          command: |
+            docker build --build-arg PROJECT_NAME=<< paramters.project >> -t gauravagarwalr/yaes-<< paramters.project >>:latest  --cache-from gauravagarwalr/yaes-<< paramters.project >> .
+
+      - run:
+          name: Save Docker image layer cache
+          command: |
+            mkdir -p /caches
+            docker save -o /caches/<< paramters.project >>.tar gauravagarwalr/yaes-<< paramters.project >>
+
+      - save_cache:
+          key: v1-{{ .Branch }}-{{ epoch }}
+          paths:
+            - /caches/<< paramters.project >>.tar
+
+      - deploy:
+          name: Publish Docker Image to Docker Hub
+          command: |
+            docker login -u "$DOCKERHUB_USERNAME" -p "$DOCKERHUB_PASS"
+
+            docker push gauravagarwalr/yaes-<< paramters.project >>:latest
+
+            docker tag gauravagarwalr/yaes-<< paramters.project >>:latest gauravagarwalr/yaes-<< paramters.project >>:${CIRCLE_BRANCH}-${CIRCLE_WORKFLOW_ID}
+            docker push gauravagarwalr/yaes-<< paramters.project >>:${CIRCLE_BRANCH}-${CIRCLE_WORKFLOW_ID}
+            docker tag gauravagarwalr/yaes-<< paramters.project >>:latest gauravagarwalr/yaes-<< paramters.project >>:${CIRCLE_BRANCH}-latest
+            docker push gauravagarwalr/yaes-<< paramters.project >>:${CIRCLE_BRANCH}-latest
+
 jobs:
   test:
     working_directory: /go/src/algogrit.com/yaes-server
@@ -41,98 +92,16 @@ jobs:
     docker:
       - image: docker:stable-git
     steps:
-      - checkout
-      - setup_remote_docker
-
-      - restore_cache:
-          keys:
-            - v1-{{ .Branch }}
-          paths:
-            - /caches/migration.tar
-
-      - run:
-          name: Load Docker image layer cache
-          command: |
-            set +o pipefail
-            docker load -i /caches/migration.tar | true
-            docker images
-
-      - run:
-          name: Build application Docker image
-          command: |
-            docker build --build-arg PROJECT_NAME=migration -t gauravagarwalr/yaes-migration:latest  --cache-from gauravagarwalr/yaes-migration .
-
-      - run:
-          name: Save Docker image layer cache
-          command: |
-            mkdir -p /caches
-            docker save -o /caches/migration.tar gauravagarwalr/yaes-migration
-
-      - save_cache:
-          key: v1-{{ .Branch }}-{{ epoch }}
-          paths:
-            - /caches/migration.tar
-
-      - deploy:
-          name: Publish Docker Image to Docker Hub
-          command: |
-            docker login -u "$DOCKERHUB_USERNAME" -p "$DOCKERHUB_PASS"
-
-            docker push gauravagarwalr/yaes-migration:latest
-
-            docker tag gauravagarwalr/yaes-migration:latest gauravagarwalr/yaes-migration:${CIRCLE_BRANCH}-${CIRCLE_WORKFLOW_ID}
-            docker push gauravagarwalr/yaes-migration:${CIRCLE_BRANCH}-${CIRCLE_WORKFLOW_ID}
-            docker tag gauravagarwalr/yaes-migration:latest gauravagarwalr/yaes-migration:${CIRCLE_BRANCH}-latest
-            docker push gauravagarwalr/yaes-migration:${CIRCLE_BRANCH}-latest
+      - build-and-push-to-docker-hub:
+          project: "migration"
 
   build-and-push-server-image:
     working_directory: /app
     docker:
       - image: docker:stable-git
     steps:
-      - checkout
-      - setup_remote_docker
-
-      - restore_cache:
-          keys:
-            - v1-{{ .Branch }}
-          paths:
-            - /caches/server.tar
-
-      - run:
-          name: Load Docker image layer cache
-          command: |
-            set +o pipefail
-            docker load -i /caches/server.tar | true
-            docker images
-
-      - run:
-          name: Build application Docker image
-          command: |
-            docker build --build-arg PROJECT_NAME=server -t gauravagarwalr/yaes-server:latest  --cache-from gauravagarwalr/yaes-server .
-
-      - run:
-          name: Save Docker image layer cache
-          command: |
-            mkdir -p /caches
-            docker save -o /caches/server.tar gauravagarwalr/yaes-server
-
-      - save_cache:
-          key: v1-{{ .Branch }}-{{ epoch }}
-          paths:
-            - /caches/server.tar
-
-      - deploy:
-          name: Publish Docker Image to Docker Hub
-          command: |
-            docker login -u "$DOCKERHUB_USERNAME" -p "$DOCKERHUB_PASS"
-
-            docker push gauravagarwalr/yaes-server:latest
-
-            docker tag gauravagarwalr/yaes-server:latest gauravagarwalr/yaes-server:${CIRCLE_BRANCH}-${CIRCLE_WORKFLOW_ID}
-            docker push gauravagarwalr/yaes-server:${CIRCLE_BRANCH}-${CIRCLE_WORKFLOW_ID}
-            docker tag gauravagarwalr/yaes-server:latest gauravagarwalr/yaes-server:${CIRCLE_BRANCH}-latest
-            docker push gauravagarwalr/yaes-server:${CIRCLE_BRANCH}-latest
+      - build-and-push-to-docker-hub:
+          project: "server"
 
 workflows:
   test_and_deploy:
