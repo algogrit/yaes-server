@@ -1,11 +1,11 @@
 FROM golang:1.14.2 as builder
-ARG PROJECT_NAME=server
 WORKDIR /app
-RUN echo Building image for... $PROJECT_NAME
 COPY go.mod go.sum ./
 RUN go mod download
 COPY . .
 ENV CGO_ENABLED=0 GOOS=linux
+ARG PROJECT_NAME=server
+RUN echo Building image for... $PROJECT_NAME
 RUN go build -o /run/app ./cmd/${PROJECT_NAME}
 
 FROM alpine:latest
