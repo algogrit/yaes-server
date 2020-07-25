@@ -57,6 +57,7 @@ jobs:
             set +o pipefail
             docker load -i /caches/migration.tar | true
             docker load -i /caches/server.tar | true
+            docker images
 
       - run:
           name: Build application Docker image
