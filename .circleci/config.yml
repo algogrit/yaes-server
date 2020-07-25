@@ -62,9 +62,9 @@ jobs:
       - run:
           name: Build application Docker image
           command: |
-            docker build --cache-from=migration --build-arg PROJECT_NAME=migration -t gauravagarwalr/yaes-migration:latest .
+            docker build --build-arg PROJECT_NAME=migration -t gauravagarwalr/yaes-migration:latest .
 
-            docker build --cache-from=server --build-arg PROJECT_NAME=server -t gauravagarwalr/yaes-server:latest .
+            docker build --build-arg PROJECT_NAME=server -t gauravagarwalr/yaes-server:latest .
 
       - run:
           name: Save Docker image layer cache
