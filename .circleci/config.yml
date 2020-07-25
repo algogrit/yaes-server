@@ -82,13 +82,19 @@ jobs:
           name: Publish Docker Image to Docker Hub
           command: |
             echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
-            docker push $IMAGE_NAME:latest
+
+            docker push gauravagarwalr/yaes-migration:latest
+            docker push gauravagarwalr/yaes-server:latest
 
             docker tag gauravagarwalr/yaes-migration:latest gauravagarwalr/yaes-migration:${CIRCLE_BRANCH}-${CIRCLE_WORKFLOW_ID}
+            docker push gauravagarwalr/yaes-migration:${CIRCLE_BRANCH}-${CIRCLE_WORKFLOW_ID}
             docker tag gauravagarwalr/yaes-migration:latest gauravagarwalr/yaes-migration:${CIRCLE_BRANCH}-latest
+            docker push gauravagarwalr/yaes-migration:${CIRCLE_BRANCH}-latest
 
             docker tag gauravagarwalr/yaes-server:latest gauravagarwalr/yaes-server:${CIRCLE_BRANCH}-${CIRCLE_WORKFLOW_ID}
+            docker push gauravagarwalr/yaes-server:${CIRCLE_BRANCH}-${CIRCLE_WORKFLOW_ID}
             docker tag gauravagarwalr/yaes-server:latest gauravagarwalr/yaes-server:${CIRCLE_BRANCH}-latest
+            docker push gauravagarwalr/yaes-server:${CIRCLE_BRANCH}-latest
 
 workflows:
   test_and_deploy:
