@@ -81,7 +81,7 @@ jobs:
       - deploy:
           name: Publish Docker Image to Docker Hub
           command: |
-            echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
+            docker login -u "$DOCKERHUB_USERNAME" -p "$DOCKERHUB_PASS"
 
             docker push gauravagarwalr/yaes-migration:latest
             docker push gauravagarwalr/yaes-server:latest
