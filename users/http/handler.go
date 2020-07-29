@@ -7,6 +7,7 @@ import (
 	"algogrit.com/yaes-server/entities"
 	"algogrit.com/yaes-server/internal/config"
 	httpError "algogrit.com/yaes-server/pkg/http_error"
+	"algogrit.com/yaes-server/pkg/metrics"
 	"algogrit.com/yaes-server/users/service"
 	"github.com/gorilla/mux"
 	"github.com/justinas/alice"
@@ -17,6 +18,7 @@ type Handler struct {
 	us       service.UserService
 	jwtChain alice.Chain
 	*mux.Router
+	observer metrics.HTTPSummary
 }
 
 func (h *Handler) index(w http.ResponseWriter, req *http.Request) {
@@ -66,18 +68,21 @@ func (h *Handler) login(w http.ResponseWriter, req *http.Request) {
 
 // Setup routes on an existing Router instance
 func (h *Handler) Setup(r *mux.Router) {
-	r.HandleFunc("/users", h.create).Methods("POST")
-	r.HandleFunc("/login", h.login).Methods("POST")
+	commonChain := alice.New(h.observer.Middleware)
 
-	r.Handle("/users", h.jwtChain.ThenFunc(h.index)).Methods("GET")
+	r.Handle("/users", commonChain.ThenFunc(h.create)).Methods("POST")
+	r.Handle("/login", commonChain.ThenFunc(h.login)).Methods("POST")
+
+	r.Handle("/users", commonChain.Extend(h.jwtChain).ThenFunc(h.index)).Methods("GET")
 }
 
 // NewHTTPHandler create a new http.Handler
 func NewHTTPHandler(us service.UserService, jwtChain alice.Chain) Handler {
 	h := Handler{us: us, jwtChain: jwtChain}
 
-	h.Router = mux.NewRouter()
+	h.observer = metrics.NewHTTPSummary(config.MetricsNamespace, "orders")
 
+	h.Router = mux.NewRouter()
 	h.Setup(h.Router)
 
 	return h

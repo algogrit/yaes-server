@@ -12,6 +12,8 @@ type LookupKey string
 const (
 	// LoggedInUser is the key in context
 	LoggedInUser LookupKey = "LoggedInUser"
+	// MetricsNamespace is the reported prometheus namespace
+	MetricsNamespace = "yaes_server"
 )
 
 // Config reads values from environment variables

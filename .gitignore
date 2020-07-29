@@ -7,3 +7,4 @@ main
 server
 migration
 mock_*.go
+.env
