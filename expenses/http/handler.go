@@ -8,6 +8,7 @@ import (
 	"algogrit.com/yaes-server/expenses/service"
 	"algogrit.com/yaes-server/internal/config"
 	httpError "algogrit.com/yaes-server/pkg/http_error"
+	"algogrit.com/yaes-server/pkg/metrics"
 	"github.com/gorilla/mux"
 	"github.com/justinas/alice"
 )
@@ -17,6 +18,7 @@ type Handler struct {
 	es       service.ExpenseService
 	jwtChain alice.Chain
 	*mux.Router
+	observer metrics.HTTPSummary
 }
 
 func (h *Handler) index(w http.ResponseWriter, req *http.Request) {
@@ -50,17 +52,19 @@ func (h *Handler) create(w http.ResponseWriter, req *http.Request) {
 
 // Setup routes on an existing Router instance
 func (h *Handler) Setup(r *mux.Router) {
-	r.Handle("/expenses", h.jwtChain.ThenFunc(h.index)).Methods("GET")
+	commonChain := alice.New(h.observer.Middleware)
 
-	r.Handle("/expenses", h.jwtChain.ThenFunc(h.create)).Methods("POST")
+	r.Handle("/expenses", commonChain.Extend(h.jwtChain).ThenFunc(h.index)).Methods("GET")
+	r.Handle("/expenses", commonChain.Extend(h.jwtChain).ThenFunc(h.create)).Methods("POST")
 }
 
 // NewHTTPHandler create a new http.Handler
 func NewHTTPHandler(ps service.ExpenseService, jwtChain alice.Chain) Handler {
 	h := Handler{es: ps, jwtChain: jwtChain}
 
-	h.Router = mux.NewRouter()
+	h.observer = metrics.NewHTTPSummary(config.MetricsNamespace, "expenses")
 
+	h.Router = mux.NewRouter()
 	h.Setup(h.Router)
 
 	return h
