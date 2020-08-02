@@ -1,16 +1,13 @@
 apiVersion: monitoring.coreos.com/v1
-kind: ServiceMonitor
+kind: PodMonitor
 metadata:
   name: yaes-server
   labels:
     app: yaes-monitor
     release: monitoring
 spec:
-  namespaceSelector:
-    matchNames:
-      - default
   selector:
     matchLabels:
       app: yaes
-  endpoints:
-  - port: diagnostics
+  podMetricsEndpoints:
+    - port: diagnostics
