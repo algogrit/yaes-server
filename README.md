@@ -36,6 +36,10 @@ Primary purpose of the web app is to keep track of your expenses, payables and r
 
 - Services (users/service, expenses/service, payables/service)
 
+  Orchestrates the interaction with repository and other services.
+
+- Transport (users/http, expenses/http, payables/http)
+
   Encapsulates the interaction with application over an http API
 
 - Binaries (cmd/server, cmd/migration)
