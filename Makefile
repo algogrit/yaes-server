@@ -74,6 +74,21 @@ k8s-reapply-svc:
 	kubectl delete -f devops/k8s/service.yaml
 	kubectl apply -f devops/k8s/service.yaml
 
+k8s-deploy-dashboard:
+	./devops/k8s/third-party/dashboard/up.sh
+
+k8s-remove-dashboard:
+	./devops/k8s/third-party/dashboard/down.sh
+
+k8s-proxy:
+	kubectl proxy
+
+k8s-open-dashboard:
+	open http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy
+
+k8s-get-dashboard-token:
+	./devops/k8s/third-party/dashboard/scripts/get-token.sh
+
 # username: admin
 # password: prom-operator
 kctl-pf-grafana:
