@@ -14,11 +14,11 @@
 ./devops/k8s/up.sh
 ```
 
-This internally calls `./devops/k8s/helm/install.sh`.
+This internally calls `./devops/k8s/third-party/helm/install.sh`.
 
 ## Clean the cluster
 
-`down.sh` internally calls `./devops/k8s/helm/uninstall.sh`.
+`down.sh` internally calls `./devops/k8s/third-party/helm/uninstall.sh`.
 
 ```bash
 ./devops/k8s/down.sh
