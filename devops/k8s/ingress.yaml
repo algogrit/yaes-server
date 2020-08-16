@@ -1,0 +1,30 @@
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: yaes-ingress
+  annotations:
+    # cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    nginx.ingress.kubernetes.io/use-regex: "true"
+
+spec:
+  # tls:
+  #   - hosts:
+  #       - yaes-local.com
+  #     secretName: yaes-tls
+
+  rules:
+    - host: yaes-local.com
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: yaes
+              servicePort: 8080
+          - path: /metrics
+            backend:
+              serviceName: yaes
+              servicePort: 8000
+          - path: /healthz
+            backend:
+                serviceName: yaes
+                servicePort: 8000
