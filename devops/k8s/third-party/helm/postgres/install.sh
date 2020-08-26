@@ -2,7 +2,7 @@
 
 set -e
 
-helm install yaes-db -f devops/k8s/third-party/helm/postgres/values.yaml bitnami/postgresql
+helm install yaes-db -f devops/k8s/third-party/helm/postgres/values.yaml bitnami/postgresql || echo "Already installed postgres db..."
 # helm upgrade yaes-db -f devops/k8s/third-party/helm/postgres/values.yaml bitnami/postgresql
 
 kubectl wait \
