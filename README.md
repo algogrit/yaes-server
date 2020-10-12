@@ -51,7 +51,7 @@ Primary purpose of the web app is to keep track of your expenses, payables and r
 ### Setup
 
 ```bash
-go get -u algogrit.com/yaes-server/cmd/yaes-server
+go get -u github.com/algogrit/yaes-server/cmd/yaes-server
 cd $GOPATH/src/algogrit.com/yaes-server
 make setup
 ```
